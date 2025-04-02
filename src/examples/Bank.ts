@@ -1,4 +1,4 @@
-import { C4Component, C4Container, C4Operation, C4System } from "@oselvar/c4";
+import { C4Component, C4Container, C4Operation, C4System } from "../decorators";
 
 @C4System()
 export class Bank {}

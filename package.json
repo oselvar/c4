@@ -47,6 +47,7 @@
     "test": "vitest",
     "fix": "tsc && prettier --write . && eslint --fix .",
     "build": "tsup",
+    "compile": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "upgrade": "npm-check-updates --upgrade --deep"
   },
@@ -75,6 +76,7 @@
   },
   "dependencies": {
     "commander": "13.1.0",
+    "error-stack-parser": "2.1.4",
     "ts-morph": "25.0.1",
     "zod": "3.24.2"
   }

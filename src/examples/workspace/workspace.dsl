@@ -12,16 +12,15 @@ workspace {
       containerSinglePageApplication = container "SinglePageApplication" {
       }
     }
-    systemBank -> componentSecurityComponent "checkCredentials"
-    systemBank -> componentSignInController "signIn"
-    systemBank -> containerDatabase "readCredentials"
+    componentSecurityComponent -> containerDatabase "readCredentials"
+    componentSignInController -> componentSecurityComponent "checkCredentials"
   }
-	views {
-		styles {
-			element "Database" {
+  views {
+    styles {
+      element "Database" {
         shape cylinder
-			}
-		}
-	}
+      }
+    }
+  }
 }
 		

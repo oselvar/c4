@@ -10,7 +10,7 @@ export class C4Model {
 
   registerOpenApiComponents(
     openapi: OpenAPIV3.Document,
-    { container }: C4ComponentParams,
+    { container }: C4ComponentParams
   ) {
     for (const path in openapi.paths) {
       const method = openapi.paths[path];
@@ -30,7 +30,7 @@ export class C4Model {
     openapi: OpenAPIV3.Document,
     callerName: string,
     httpMethod: HttpMethod,
-    path: string,
+    path: string
   ) {
     let basePath = "";
     const server = openapi.servers?.[0]?.url;
@@ -65,21 +65,21 @@ export class C4Model {
   system(name: string, { tags }: C4SystemParams) {
     this.systemByName.set(
       name,
-      new C4Object(this, "system", name, { parent: null, tags }),
+      new C4Object(this, "system", name, { parent: null, tags })
     );
   }
 
   container(name: string, { system, tags }: C4ContainerParams) {
     this.containerByName.set(
       name,
-      new C4Object(this, "container", name, { parent: system, tags }),
+      new C4Object(this, "container", name, { parent: system, tags })
     );
   }
 
   component(name: string, { container }: C4ComponentParams) {
     this.componentByName.set(
       name,
-      new C4Object(this, "component", name, { parent: container }),
+      new C4Object(this, "component", name, { parent: container })
     );
   }
 
@@ -91,13 +91,13 @@ export class C4Model {
 
   generateStructurizrDSL(): string {
     const systems = Array.from(this.systemByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
+      a.variableName.localeCompare(b.variableName)
     );
     const containers = Array.from(this.containerByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
+      a.variableName.localeCompare(b.variableName)
     );
     const components = Array.from(this.componentByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
+      a.variableName.localeCompare(b.variableName)
     );
 
     let dsl = `workspace {\n  model {\n`;
@@ -136,13 +136,13 @@ export class C4Model {
     });
 
     dsl += `  }
-	views {
-		styles {
-			element "Database" {
+  views {
+    styles {
+      element "Database" {
         shape cylinder
-			}
-		}
-	}
+      }
+    }
+  }
 }
 		`;
     return dsl;
@@ -163,8 +163,8 @@ export class C4Model {
         `C4 object "${name}" not found. Make sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
           c4Objects,
           null,
-          2,
-        )}`,
+          2
+        )}`
       );
     }
 
@@ -183,7 +183,7 @@ export class C4Model {
     return Array.from(this.systemByName.values())
       .concat(
         Array.from(this.containerByName.values()),
-        Array.from(this.componentByName.values()),
+        Array.from(this.componentByName.values())
       )
       .sort((a, b) => a.variableName.localeCompare(b.variableName));
   }
@@ -206,7 +206,7 @@ class C4Object {
     private readonly model: C4Model,
     private readonly type: string,
     private readonly _name: string,
-    private readonly params: C4ObjectParams,
+    private readonly params: C4ObjectParams
   ) {}
 
   get name() {
@@ -234,7 +234,7 @@ class C4Object {
 
   getDependencies() {
     return [...this.dependencyByUniqueName.values()].toSorted((a, b) =>
-      a.uniqueName.localeCompare(b.uniqueName),
+      a.uniqueName.localeCompare(b.uniqueName)
     );
   }
 }
@@ -242,7 +242,7 @@ class C4Object {
 class C4Dependency {
   constructor(
     public readonly callee: C4Object,
-    public readonly name: string,
+    public readonly name: string
   ) {}
 
   get uniqueName() {

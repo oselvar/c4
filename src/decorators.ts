@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
+import ErrorStackParser from "error-stack-parser";
+
 import {
   type C4ComponentParams,
   type C4ContainerParams,
@@ -67,15 +69,15 @@ function c4OperationWrapper(method: Function) {
   function wrapper(this: Function, ...args: unknown[]) {
     const calleeName = this.constructor.name;
 
-    const stack = new Error().stack || "";
+    const caller = ErrorStackParser.parse(new Error())
+      .filter((frame) => !frame.fileName?.match(/\/node_modules\//))
+      .filter((frame) => !frame.fileName?.match(/^node:internal/))
+      .filter((frame) => frame.functionName?.split(".").length === 2)
+      .map((frame) => frame.functionName?.split(".") || [])
+      .map(([className, method]) => ({ className, method }))
+      .filter(({ className }) => className !== calleeName)[0];
 
-    const callerName = stack
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.startsWith("at "))
-      .map((caller) => caller.split("/").at(-1)?.split(".")[0])
-      .filter((name) => name !== undefined)
-      .find((name) => c4Model.hasObject(name));
+    const callerName = caller?.className;
 
     if (callerName) {
       const dependencyName = method.name;
