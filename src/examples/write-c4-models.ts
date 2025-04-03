@@ -12,10 +12,18 @@ afterAll(async () => {
   const __dirname = dirname(fileURLToPath(import.meta.url));
   await writeFile(
     `${__dirname}/workspace/workspace.dsl`,
-    generateStructurizrDSL(c4Model),
+    generateStructurizrDSL(c4Model)
   );
   await writeFile(
-    `${__dirname}/mermaid-plantuml.md`,
-    `\`\`\`mermaid\n${generateC4PlantUml(c4Model)}\`\`\``,
+    `${__dirname}/system-context.md`,
+    gfmMermaid(generateC4PlantUml(c4Model, "SystemContext", "Big Bank plc"))
+  );
+  await writeFile(
+    `${__dirname}/container-api-application.md`,
+    gfmMermaid(generateC4PlantUml(c4Model, "Container", "APIApplication"))
   );
 });
+
+function gfmMermaid(mermaid: string): string {
+  return `\`\`\`mermaid\n${mermaid}\`\`\``;
+}

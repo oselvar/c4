@@ -59,21 +59,15 @@ flowchart TD
 ## Why
 
 The C4 model is a great way to visualize software systems.
-The Structurizr DSL is a great way to document a software system and how it
-fits into a larger ecosystem.
 
-However, manually maintaining a Structurizr DSL is frought with peril:
+Many teams don't have team members who know how to use the tooling.
+If they do, it's always time consuming to keep those models uptodate.
 
-- How do we keep it up to date as the code evolves?
-- How do we know if we missed something?
-- How do we know if the DSL is even correct?
+With `@oselvar/c4` you can generate diagrams from code.
 
 Quoting from the [C4 docs](https://c4model.com/diagrams/faq#will-the-diagrams-become-outdated-quickly):
 
 > Automatically generating your diagrams will ensure they are kept up to date and reflect reality at all times.
-
-StructurizrGen aims to solve these problems by generating the DSL from the
-source code and information gathered while the system is running or being tested.
 
 ## Registering C4 Objects
 
