@@ -15,6 +15,17 @@ export class C4Model {
   }
 
   /**
+   * Add a person to the model.
+   */
+  person(name: string, params?: C4PersonParams): string {
+    this.objectByName.set(
+      name,
+      new C4Object(this, "person", name, { ...params }),
+    );
+    return name;
+  }
+
+  /**
    * Add a group to the model.
    */
   group(name: string, params?: C4GroupParams): string {
@@ -162,6 +173,7 @@ class C4Dependency {
 }
 
 export type C4ObjectType =
+  | "person"
   | "group"
   | "softwareSystem"
   | "container"
@@ -173,8 +185,8 @@ type C4ObjectParams = {
 };
 
 export type C4SoftwareSystemParams = C4ObjectParams;
-
 export type C4GroupParams = C4ObjectParams;
+export type C4PersonParams = C4ObjectParams;
 
 export type C4ContainerParams = C4ObjectParams & {
   softwareSystem: string;
@@ -190,5 +202,5 @@ function toC4Objects(map: Map<string, C4Object>): readonly C4Object[] {
   );
 }
 function camelCase(words: string) {
-  return words.replace(/(?:^| )(\w)/g, (_, char) => char.toUpperCase());
+  return words.replace(/(?:^|[\s-_])(\w)/g, (_, char) => char.toUpperCase());
 }
