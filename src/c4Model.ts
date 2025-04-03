@@ -6,21 +6,15 @@ export class C4Model {
   public objectName = (name: string) => name;
 
   get systems(): readonly C4Object[] {
-    return Array.from(this.systemByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
-    );
+    return toC4Objects(this.systemByName);
   }
 
   get containers(): readonly C4Object[] {
-    return Array.from(this.containerByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
-    );
+    return toC4Objects(this.containerByName);
   }
 
   get components(): readonly C4Object[] {
-    return Array.from(this.componentByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName),
-    );
+    return toC4Objects(this.componentByName);
   }
 
   get objects(): readonly C4Object[] {
@@ -110,7 +104,7 @@ class C4Object {
 
   get parent(): C4Object | undefined {
     return this.params?.parent
-      ? c4Model.getObject(this.params.parent)
+      ? this.model.getObject(this.params.parent)
       : undefined;
   }
 
@@ -156,7 +150,8 @@ export type C4ComponentParams = {
   tags?: readonly string[];
 };
 
-if (!globalThis.__C4_MODEL__) {
-  globalThis.__C4_MODEL__ = new C4Model();
+function toC4Objects(map: Map<string, C4Object>): readonly C4Object[] {
+  return Array.from(map.values()).sort((a, b) =>
+    a.variableName.localeCompare(b.variableName),
+  );
 }
-export const c4Model = globalThis.__C4_MODEL__;

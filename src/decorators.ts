@@ -6,10 +6,9 @@ import ErrorStackParser from "error-stack-parser";
 import {
   type C4ComponentParams,
   type C4ContainerParams,
-  c4Model,
   type C4SystemParams,
 } from "./c4Model";
-
+import { c4Model } from "./globalModel";
 type Constructor<T = object> = new (...args: any[]) => T;
 
 type System = Constructor;

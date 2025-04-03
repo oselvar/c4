@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterAll } from "vitest";
 
-import { c4Model } from "../c4Model";
+import { c4Model } from "../globalModel";
 import { generateC4PlantUml } from "../plantuml";
 import { generateStructurizrDSL } from "../structurizr/generateStructurizrDSL";
 

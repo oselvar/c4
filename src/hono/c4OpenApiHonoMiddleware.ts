@@ -9,15 +9,15 @@ export function c4OpenApiHonoMiddleware(
   openapi: OpenAPIV3.Document,
 ) {
   return createMiddleware(async (c, next) => {
-    const caller = c.req.header("X-StructurizrGen-Caller");
-    const method = c.req.method;
+    const callerName = c.req.header("X-C4-Caller");
+    const httpMethod = c.req.method;
     const path = c.req.path;
-    if (caller) {
+    if (callerName) {
       openapiDependency(
         c4Model,
         openapi,
-        caller,
-        method.toLowerCase() as HttpMethod,
+        callerName,
+        httpMethod.toLowerCase() as HttpMethod,
         path,
       );
     }

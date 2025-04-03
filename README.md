@@ -98,7 +98,7 @@ Register OpenAPI specs with the `registerOpenApiComponents` method.
 
 Add a Middleware to record calls.
 
-Set the `X-StructurizrGen-Caller` header to the name of the caller.
+Set the `X-C4-Caller` header to the name of the caller.
 
 ## Usage with Vitest
 
