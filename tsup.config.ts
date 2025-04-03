@@ -7,6 +7,7 @@ export default defineConfig({
     "src/hono/index.ts",
     "src/workflows/index.ts",
     "src/workflows/cloudflare/index.ts",
+    "src/structurizr/index.ts",
   ],
   splitting: false,
   sourcemap: true,

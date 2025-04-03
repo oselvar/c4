@@ -38,6 +38,10 @@
     "./workflows/cloudflare": {
       "types": "./dist/workflows/cloudflare/index.d.ts",
       "import": "./dist/workflows/cloudflare/index.js"
+    },
+    "./structurizr": {
+      "types": "./dist/structurizr/index.d.ts",
+      "import": "./dist/structurizr/index.js"
     }
   },
   "files": [
