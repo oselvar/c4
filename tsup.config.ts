@@ -9,6 +9,7 @@ export default defineConfig({
     "src/workflows/cloudflare/index.ts",
     "src/structurizr/index.ts",
     "src/plantuml/index.ts",
+    "src/openapi/index.ts",
   ],
   splitting: false,
   sourcemap: true,

@@ -1,6 +1,3 @@
-import type { OpenAPIV3 } from "openapi-types";
-import { match } from "path-to-regexp";
-
 export class C4Model {
   private readonly systemByName = new Map<string, C4Object>();
   private readonly containerByName = new Map<string, C4Object>();
@@ -28,60 +25,6 @@ export class C4Model {
 
   get objects(): readonly C4Object[] {
     return [...this.systems, ...this.containers, ...this.components];
-  }
-
-  registerOpenApiComponents(
-    openapi: OpenAPIV3.Document,
-    { container }: C4ComponentParams,
-  ) {
-    for (const path in openapi.paths) {
-      const method = openapi.paths[path];
-      for (const httpMethod in method) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const operation = method[httpMethod] as OpenAPIV3.OperationObject;
-        if (!operation.operationId) {
-          continue;
-        }
-        this.component(operation.operationId, { container });
-      }
-    }
-  }
-
-  openapiDependency(
-    openapi: OpenAPIV3.Document,
-    callerName: string,
-    httpMethod: HttpMethod,
-    path: string,
-  ) {
-    let basePath = "";
-    const server = openapi.servers?.[0]?.url;
-    if (server) {
-      try {
-        const url = new URL(path, server);
-        basePath = url.pathname;
-      } catch {
-        basePath = server;
-      }
-    }
-
-    for (const [pattern, pathObject] of Object.entries(openapi.paths)) {
-      if (!pathObject) {
-        continue;
-      }
-      const pathItemObject = pathObject[httpMethod];
-      if (!pathItemObject?.operationId) {
-        continue;
-      }
-      const colonPattern = basePath + pattern.replace(/{([^}]+)}/g, ":$1");
-      const matcher = match(colonPattern, { decode: decodeURIComponent });
-      const matched = matcher(path);
-      if (matched) {
-        const calleeName = pathItemObject.operationId;
-        const dependencyName = `${httpMethod.toUpperCase()} ${pattern}`;
-        this.depencency(callerName, calleeName, dependencyName);
-      }
-    }
   }
 
   system(name: string, { tags }: C4SystemParams) {
@@ -143,16 +86,6 @@ export class C4Model {
   }
 }
 
-export type HttpMethod =
-  | "get"
-  | "put"
-  | "post"
-  | "delete"
-  | "options"
-  | "head"
-  | "patch"
-  | "trace";
-
 class C4Object {
   private readonly dependencyByUniqueName = new Map<string, C4Dependency>();
 
@@ -181,15 +114,15 @@ class C4Object {
       : undefined;
   }
 
-  dependsOn(callee: C4Object, dependencyName: string) {
-    const dependency = new C4Dependency(callee, dependencyName);
-    this.dependencyByUniqueName.set(dependency.uniqueName, dependency);
-  }
-
-  getDependencies() {
+  get dependencies(): readonly C4Dependency[] {
     return [...this.dependencyByUniqueName.values()].toSorted((a, b) =>
       a.uniqueName.localeCompare(b.uniqueName),
     );
+  }
+
+  dependsOn(callee: C4Object, dependencyName: string) {
+    const dependency = new C4Dependency(callee, dependencyName);
+    this.dependencyByUniqueName.set(dependency.uniqueName, dependency);
   }
 }
 

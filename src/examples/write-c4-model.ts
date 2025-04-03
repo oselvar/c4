@@ -12,10 +12,10 @@ afterAll(async () => {
   const __dirname = dirname(fileURLToPath(import.meta.url));
   await writeFile(
     `${__dirname}/workspace/workspace.dsl`,
-    generateStructurizrDSL(c4Model)
+    generateStructurizrDSL(c4Model),
   );
   await writeFile(
     `${__dirname}/mermaid-plantuml.md`,
-    `\`\`\`mermaid\n${generateC4PlantUml(c4Model)}\`\`\``
+    `\`\`\`mermaid\n${generateC4PlantUml(c4Model)}\`\`\``,
   );
 });

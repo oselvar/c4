@@ -30,7 +30,7 @@ export function generateStructurizrDSL(model: C4Model): string {
   });
 
   model.objects.forEach((c4Object) => {
-    c4Object.getDependencies().forEach((dependency) => {
+    c4Object.dependencies.forEach((dependency) => {
       dsl += `    ${c4Object.variableName} -> ${dependency.callee.variableName} "${dependency.name}"\n`;
     });
   });

@@ -46,6 +46,10 @@
     "./plantuml": {
       "types": "./dist/plantuml/index.d.ts",
       "import": "./dist/plantuml/index.js"
+    },
+    "./openapi": {
+      "types": "./dist/openapi/index.d.ts",
+      "import": "./dist/openapi/index.js"
     }
   },
   "files": [
