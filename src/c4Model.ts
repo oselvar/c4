@@ -8,9 +8,31 @@ export class C4Model {
 
   public objectName = (name: string) => name;
 
+  get systems(): readonly C4Object[] {
+    return Array.from(this.systemByName.values()).sort((a, b) =>
+      a.variableName.localeCompare(b.variableName),
+    );
+  }
+
+  get containers(): readonly C4Object[] {
+    return Array.from(this.containerByName.values()).sort((a, b) =>
+      a.variableName.localeCompare(b.variableName),
+    );
+  }
+
+  get components(): readonly C4Object[] {
+    return Array.from(this.componentByName.values()).sort((a, b) =>
+      a.variableName.localeCompare(b.variableName),
+    );
+  }
+
+  get objects(): readonly C4Object[] {
+    return [...this.systems, ...this.containers, ...this.components];
+  }
+
   registerOpenApiComponents(
     openapi: OpenAPIV3.Document,
-    { container }: C4ComponentParams
+    { container }: C4ComponentParams,
   ) {
     for (const path in openapi.paths) {
       const method = openapi.paths[path];
@@ -30,7 +52,7 @@ export class C4Model {
     openapi: OpenAPIV3.Document,
     callerName: string,
     httpMethod: HttpMethod,
-    path: string
+    path: string,
   ) {
     let basePath = "";
     const server = openapi.servers?.[0]?.url;
@@ -65,21 +87,21 @@ export class C4Model {
   system(name: string, { tags }: C4SystemParams) {
     this.systemByName.set(
       name,
-      new C4Object(this, "system", name, { parent: null, tags })
+      new C4Object(this, "system", name, { parent: null, tags }),
     );
   }
 
   container(name: string, { system, tags }: C4ContainerParams) {
     this.containerByName.set(
       name,
-      new C4Object(this, "container", name, { parent: system, tags })
+      new C4Object(this, "container", name, { parent: system, tags }),
     );
   }
 
   component(name: string, { container }: C4ComponentParams) {
     this.componentByName.set(
       name,
-      new C4Object(this, "component", name, { parent: container })
+      new C4Object(this, "component", name, { parent: container }),
     );
   }
 
@@ -87,65 +109,6 @@ export class C4Model {
     const c4ObjectCaller = this.getObject(callerName);
     const c4ObjectCallee = this.getObject(calleeName);
     c4ObjectCaller.dependsOn(c4ObjectCallee, dependencyName);
-  }
-
-  generateStructurizrDSL(): string {
-    const systems = Array.from(this.systemByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName)
-    );
-    const containers = Array.from(this.containerByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName)
-    );
-    const components = Array.from(this.componentByName.values()).sort((a, b) =>
-      a.variableName.localeCompare(b.variableName)
-    );
-
-    let dsl = `workspace {\n  model {\n`;
-
-    // Define Systems
-    systems.forEach((system) => {
-      dsl += `    ${system.variableName} = softwareSystem "${system.name}" {\n`;
-      system.tags?.forEach((tag) => {
-        dsl += `        tags "${tag}"\n`;
-      });
-      containers
-        .filter((container) => container.parent === system)
-        .forEach((container) => {
-          dsl += `      ${container.variableName} = container "${container.name}" {\n`;
-          container.tags?.forEach((tag) => {
-            dsl += `        tags "${tag}"\n`;
-          });
-          components
-            .filter((component) => component.parent === container)
-            .forEach((component) => {
-              dsl += `        ${component.variableName} = component "${component.name}" {\n`;
-              component.tags?.forEach((tag) => {
-                dsl += `        tags "${tag}"\n`;
-              });
-              dsl += `        }\n`;
-            });
-          dsl += `      }\n`;
-        });
-      dsl += `    }\n`;
-    });
-
-    this.c4Objects().forEach((c4Object) => {
-      c4Object.getDependencies().forEach((dependency) => {
-        dsl += `    ${c4Object.variableName} -> ${dependency.callee.variableName} "${dependency.name}"\n`;
-      });
-    });
-
-    dsl += `  }
-  views {
-    styles {
-      element "Database" {
-        shape cylinder
-      }
-    }
-  }
-}
-		`;
-    return dsl;
   }
 
   getObject(name: string): C4Object {
@@ -163,8 +126,8 @@ export class C4Model {
         `C4 object "${name}" not found. Make sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
           c4Objects,
           null,
-          2
-        )}`
+          2,
+        )}`,
       );
     }
 
@@ -177,15 +140,6 @@ export class C4Model {
       this.containerByName.has(name) ||
       this.componentByName.has(name)
     );
-  }
-
-  c4Objects(): C4Object[] {
-    return Array.from(this.systemByName.values())
-      .concat(
-        Array.from(this.containerByName.values()),
-        Array.from(this.componentByName.values())
-      )
-      .sort((a, b) => a.variableName.localeCompare(b.variableName));
   }
 }
 
@@ -206,7 +160,7 @@ class C4Object {
     private readonly model: C4Model,
     private readonly type: string,
     private readonly _name: string,
-    private readonly params: C4ObjectParams
+    private readonly params: C4ObjectParams,
   ) {}
 
   get name() {
@@ -234,7 +188,7 @@ class C4Object {
 
   getDependencies() {
     return [...this.dependencyByUniqueName.values()].toSorted((a, b) =>
-      a.uniqueName.localeCompare(b.uniqueName)
+      a.uniqueName.localeCompare(b.uniqueName),
     );
   }
 }
@@ -242,7 +196,7 @@ class C4Object {
 class C4Dependency {
   constructor(
     public readonly callee: C4Object,
-    public readonly name: string
+    public readonly name: string,
   ) {}
 
   get uniqueName() {
