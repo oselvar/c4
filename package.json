@@ -59,7 +59,6 @@
     "test": "vitest",
     "fix": "tsc && prettier --write . && eslint --fix .",
     "build": "tsup",
-    "compile": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "upgrade": "npm-check-updates --upgrade --deep"
   },

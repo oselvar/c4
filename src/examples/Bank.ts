@@ -1,7 +1,4 @@
-import { C4Component, C4Container, C4Operation, C4System } from "../decorators";
-
-@C4System()
-export class Bank {}
+import { C4Component, C4Container, C4Operation } from "../decorators";
 
 @C4Container({ system: "Bank" })
 export class SinglePageApplication {}
@@ -29,7 +26,7 @@ export class SecurityComponent {
   }
 }
 
-@C4Container({ system: "Bank" })
+@C4Container({ system: "Bank", tags: ["database"] })
 export class Database {
   @C4Operation()
   readCredentials() {}

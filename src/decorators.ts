@@ -17,7 +17,7 @@ type Component = Constructor;
 
 export function C4System<T extends System>(params?: C4SystemParams) {
   return (system: T) => {
-    c4Model.system(system.name, { tags: params?.tags });
+    c4Model.softwareSystem(system.name, { tags: params?.tags });
     return system;
   };
 }

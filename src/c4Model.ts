@@ -1,45 +1,52 @@
 export class C4Model {
-  private readonly systemByName = new Map<string, C4Object>();
-  private readonly containerByName = new Map<string, C4Object>();
-  private readonly componentByName = new Map<string, C4Object>();
+  private readonly objectByName = new Map<string, C4Object>();
 
   public objectName = (name: string) => name;
 
-  get systems(): readonly C4Object[] {
-    return toC4Objects(this.systemByName);
-  }
-
-  get containers(): readonly C4Object[] {
-    return toC4Objects(this.containerByName);
-  }
-
-  get components(): readonly C4Object[] {
-    return toC4Objects(this.componentByName);
-  }
-
   get objects(): readonly C4Object[] {
-    return [...this.systems, ...this.containers, ...this.components];
+    return toC4Objects(this.objectByName);
   }
 
-  system(name: string, { tags }: C4SystemParams) {
-    this.systemByName.set(
-      name,
-      new C4Object(this, "system", name, { parent: null, tags }),
-    );
+  get rootObjects(): readonly C4Object[] {
+    return this.objects.filter((object) => object.parent === undefined);
   }
 
-  container(name: string, { system, tags }: C4ContainerParams) {
-    this.containerByName.set(
+  group(name: string, params?: C4GroupParams): string {
+    this.objectByName.set(
       name,
-      new C4Object(this, "container", name, { parent: system, tags }),
+      new C4Object(this, "group", name, { ...params }),
     );
+    return name;
   }
 
-  component(name: string, { container }: C4ComponentParams) {
-    this.componentByName.set(
+  softwareSystem(name: string, params?: C4SystemParams): string {
+    this.objectByName.set(
       name,
-      new C4Object(this, "component", name, { parent: container }),
+      new C4Object(this, "softwareSystem", name, { ...params }),
     );
+    return name;
+  }
+
+  container(name: string, params: C4ContainerParams): string {
+    this.objectByName.set(
+      name,
+      new C4Object(this, "container", name, {
+        ...params,
+        group: params.system || params.group,
+      }),
+    );
+    return name;
+  }
+
+  component(name: string, params: C4ComponentParams): string {
+    this.objectByName.set(
+      name,
+      new C4Object(this, "component", name, {
+        ...params,
+        group: params.container || params.group,
+      }),
+    );
+    return name;
   }
 
   depencency(callerName: string, calleeName: string, dependencyName: string) {
@@ -49,16 +56,9 @@ export class C4Model {
   }
 
   getObject(name: string): C4Object {
-    const c4Object =
-      this.systemByName.get(name) ??
-      this.containerByName.get(name) ??
-      this.componentByName.get(name);
+    const c4Object = this.objectByName.get(name);
     if (!c4Object) {
-      const c4Objects = {
-        systems: Array.from(this.systemByName.keys()),
-        containers: Array.from(this.containerByName.keys()),
-        components: Array.from(this.componentByName.keys()),
-      };
+      const c4Objects = Array.from(this.objectByName.keys());
       throw new Error(
         `C4 object "${name}" not found. Make sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
           c4Objects,
@@ -72,20 +72,16 @@ export class C4Model {
   }
 
   hasObject(name: string) {
-    return (
-      this.systemByName.has(name) ||
-      this.containerByName.has(name) ||
-      this.componentByName.has(name)
-    );
+    return this.objectByName.has(name);
   }
 }
 
-class C4Object {
+export class C4Object {
   private readonly dependencyByUniqueName = new Map<string, C4Dependency>();
 
   constructor(
     private readonly model: C4Model,
-    private readonly type: string,
+    public readonly type: C4ObjectType,
     private readonly _name: string,
     private readonly params: C4ObjectParams,
   ) {}
@@ -95,7 +91,7 @@ class C4Object {
   }
 
   get variableName() {
-    return `${this.type}${this.name}`;
+    return `${this.type}${camelCase(this.name)}`;
   }
 
   get tags() {
@@ -103,9 +99,13 @@ class C4Object {
   }
 
   get parent(): C4Object | undefined {
-    return this.params?.parent
-      ? this.model.getObject(this.params.parent)
+    return this.params?.group
+      ? this.model.getObject(this.params.group)
       : undefined;
+  }
+
+  get children(): readonly C4Object[] {
+    return this.model.objects.filter((object) => object.parent === this);
   }
 
   get dependencies(): readonly C4Dependency[] {
@@ -131,27 +131,34 @@ class C4Dependency {
   }
 }
 
+export type C4ObjectType =
+  | "group"
+  | "softwareSystem"
+  | "container"
+  | "component";
+
 type C4ObjectParams = {
-  parent: string | null;
+  group?: string;
   tags?: readonly string[];
 };
 
-export type C4SystemParams = {
-  tags?: readonly string[];
-};
+export type C4GroupParams = C4ObjectParams;
 
-export type C4ContainerParams = {
+export type C4SystemParams = C4ObjectParams;
+
+export type C4ContainerParams = C4ObjectParams & {
   system: string;
-  tags?: readonly string[];
 };
 
-export type C4ComponentParams = {
+export type C4ComponentParams = C4ObjectParams & {
   container: string;
-  tags?: readonly string[];
 };
 
 function toC4Objects(map: Map<string, C4Object>): readonly C4Object[] {
   return Array.from(map.values()).sort((a, b) =>
     a.variableName.localeCompare(b.variableName),
   );
+}
+function camelCase(words: string) {
+  return words.replace(/(?:^| )(\w)/g, (_, char) => char.toUpperCase());
 }

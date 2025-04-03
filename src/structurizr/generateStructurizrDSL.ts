@@ -1,49 +1,42 @@
-import { C4Model } from "../c4Model";
+import { C4Model, C4Object } from "../c4Model";
 
 export function generateStructurizrDSL(model: C4Model): string {
-  let dsl = `workspace {\n  model {\n`;
-
-  model.systems.forEach((system) => {
-    dsl += `    ${system.variableName} = softwareSystem "${system.name}" {\n`;
-    system.tags?.forEach((tag) => {
-      dsl += `        tags "${tag}"\n`;
-    });
-    model.containers
-      .filter((container) => container.parent === system)
-      .forEach((container) => {
-        dsl += `      ${container.variableName} = container "${container.name}" {\n`;
-        container.tags?.forEach((tag) => {
-          dsl += `        tags "${tag}"\n`;
-        });
-        model.components
-          .filter((component) => component.parent === container)
-          .forEach((component) => {
-            dsl += `        ${component.variableName} = component "${component.name}" {\n`;
-            component.tags?.forEach((tag) => {
-              dsl += `        tags "${tag}"\n`;
-            });
-            dsl += `        }\n`;
-          });
-        dsl += `      }\n`;
-      });
-    dsl += `    }\n`;
-  });
-
+  let s = `workspace {\n  model {\n`;
+  s += recursiveWalk(model.rootObjects, 2);
+  s += "\n\n";
   model.objects.forEach((c4Object) => {
     c4Object.dependencies.forEach((dependency) => {
-      dsl += `    ${c4Object.variableName} -> ${dependency.callee.variableName} "${dependency.name}"\n`;
+      s += `    ${c4Object.variableName} -> ${dependency.callee.variableName} "${dependency.name}"\n`;
     });
   });
 
-  dsl += `  }
-views {
-  styles {
-    element "Database" {
-      shape cylinder
+  s += `
+    views {
+      styles {
+        element "Database" {
+          shape cylinder
+        }
+      }
     }
-  }
+`;
+
+  s += `  }\n}\n`;
+
+  //   }
+  // }
+  //   `;
+  return s;
 }
-}
-  `;
-  return dsl;
+
+function recursiveWalk(objects: readonly C4Object[], indent: number): string {
+  const s = "  ".repeat(indent);
+  return objects
+    .map((object) => {
+      const line = `${s}${object.variableName} = ${object.type} "${object.name}" {`;
+      const tags = object.tags.map((tag) => `${s}  tags "${tag}"`).join("\n");
+      const children = recursiveWalk(object.children, indent + 1);
+      const close = `${s}}`;
+      return [line, tags, children, close].filter(Boolean).join("\n");
+    })
+    .join("\n");
 }
