@@ -3,6 +3,9 @@ export class C4Model {
 
   public objectName = (name: string) => name;
 
+  /**
+   * Get all objects in the model.
+   */
   get objects(): readonly C4Object[] {
     return toC4Objects(this.objectByName);
   }
@@ -11,6 +14,9 @@ export class C4Model {
     return this.objects.filter((object) => object.parent === undefined);
   }
 
+  /**
+   * Add a group to the model.
+   */
   group(name: string, params?: C4GroupParams): string {
     this.objectByName.set(
       name,
@@ -19,7 +25,10 @@ export class C4Model {
     return name;
   }
 
-  softwareSystem(name: string, params?: C4SystemParams): string {
+  /**
+   * Add a software system to the model.
+   */
+  softwareSystem(name: string, params?: C4SoftwareSystemParams): string {
     this.objectByName.set(
       name,
       new C4Object(this, "softwareSystem", name, { ...params }),
@@ -27,12 +36,15 @@ export class C4Model {
     return name;
   }
 
+  /**
+   * Add a container to the model.
+   */
   container(name: string, params: C4ContainerParams): string {
     this.objectByName.set(
       name,
       new C4Object(this, "container", name, {
         ...params,
-        group: params.system || params.group,
+        group: params.softwareSystem || params.group,
       }),
     );
     return name;
@@ -49,12 +61,18 @@ export class C4Model {
     return name;
   }
 
+  /**
+   * Add a dependency between two objects.
+   */
   depencency(callerName: string, calleeName: string, dependencyName: string) {
     const c4ObjectCaller = this.getObject(callerName);
     const c4ObjectCallee = this.getObject(calleeName);
     c4ObjectCaller.dependsOn(c4ObjectCallee, dependencyName);
   }
 
+  /**
+   * Get an object by name.
+   */
   getObject(name: string): C4Object {
     const c4Object = this.objectByName.get(name);
     if (!c4Object) {
@@ -90,6 +108,9 @@ export class C4Object {
     return this.model.objectName(this._name);
   }
 
+  /**
+   * Get the variable name of the object.
+   */
   get variableName() {
     return `${this.type}${camelCase(this.name)}`;
   }
@@ -98,6 +119,9 @@ export class C4Object {
     return this.params.tags || [];
   }
 
+  /**
+   * Get the parent object of the object.
+   */
   get parent(): C4Object | undefined {
     return this.params?.group
       ? this.model.getObject(this.params.group)
@@ -108,6 +132,9 @@ export class C4Object {
     return this.model.objects.filter((object) => object.parent === this);
   }
 
+  /**
+   * Get the dependencies of the object.
+   */
   get dependencies(): readonly C4Dependency[] {
     return [...this.dependencyByUniqueName.values()].toSorted((a, b) =>
       a.uniqueName.localeCompare(b.uniqueName),
@@ -120,6 +147,9 @@ export class C4Object {
   }
 }
 
+/**
+ * A dependency between two objects.
+ */
 class C4Dependency {
   constructor(
     public readonly callee: C4Object,
@@ -142,12 +172,12 @@ type C4ObjectParams = {
   tags?: readonly string[];
 };
 
+export type C4SoftwareSystemParams = C4ObjectParams;
+
 export type C4GroupParams = C4ObjectParams;
 
-export type C4SystemParams = C4ObjectParams;
-
 export type C4ContainerParams = C4ObjectParams & {
-  system: string;
+  softwareSystem: string;
 };
 
 export type C4ComponentParams = C4ObjectParams & {

@@ -1,9 +1,17 @@
-import { C4Component, C4Container, C4Operation } from "../decorators";
+import {
+  C4Component,
+  C4Container,
+  C4Operation,
+  C4SoftwareSystem,
+} from "../decorators";
 
-@C4Container({ system: "Bank" })
+@C4SoftwareSystem({ group: "Big Bank plc" })
+export class Bank {}
+
+@C4Container({ softwareSystem: "Bank" })
 export class SinglePageApplication {}
 
-@C4Container({ system: "Bank" })
+@C4Container({ softwareSystem: "Bank" })
 export class APIApplication {}
 
 @C4Component({ container: "APIApplication" })
@@ -26,7 +34,7 @@ export class SecurityComponent {
   }
 }
 
-@C4Container({ system: "Bank", tags: ["database"] })
+@C4Container({ softwareSystem: "Bank", tags: ["database"] })
 export class Database {
   @C4Operation()
   readCredentials() {}

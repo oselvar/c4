@@ -1,15 +1,9 @@
-```mermaid
-C4Context
-  title SystemContext diagram for X
+````mermaid
+@startuml
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4.puml
 
-  Enterprise_Boundary(groupBigBankPlc, "Big Bank plc") {
-    System(softwareSystemBank, "Bank") {
-      Container(containerAPIApplication, "APIApplication") {
-        Component(componentSecurityComponent, "SecurityComponent")
-        Component(componentSignInController, "SignInController")
-      }
-      Container(containerDatabase, "Database")
-      Container(containerSinglePageApplication, "SinglePageApplication")
-    }
-  }
-```
+System(softwareSystemBank, "Bank", "Bank")
+
+
+@enduml```
+````

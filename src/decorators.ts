@@ -6,7 +6,7 @@ import ErrorStackParser from "error-stack-parser";
 import {
   type C4ComponentParams,
   type C4ContainerParams,
-  type C4SystemParams,
+  type C4SoftwareSystemParams,
 } from "./c4Model";
 import { c4Model } from "./globalModel";
 type Constructor<T = object> = new (...args: any[]) => T;
@@ -15,7 +15,9 @@ type System = Constructor;
 type Container = Constructor;
 type Component = Constructor;
 
-export function C4System<T extends System>(params?: C4SystemParams) {
+export function C4SoftwareSystem<T extends System>(
+  params?: C4SoftwareSystemParams,
+) {
   return (system: T) => {
     c4Model.softwareSystem(system.name, { tags: params?.tags });
     return system;
@@ -23,11 +25,11 @@ export function C4System<T extends System>(params?: C4SystemParams) {
 }
 
 export function C4Container<T extends Container>({
-  system,
+  softwareSystem: system,
   tags,
 }: C4ContainerParams) {
   return (container: T) => {
-    c4Model.container(container.name, { system, tags });
+    c4Model.container(container.name, { softwareSystem: system, tags });
     return container;
   };
 }

@@ -1,9 +1,12 @@
-```mermaid
-C4Container
-  title Container diagram for X
+````mermaid
+@startuml
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4.puml
 
-  Container_Boundary(containerAPIApplication, "APIApplication") {
-    Component(componentSecurityComponent, "SecurityComponent")
-    Component(componentSignInController, "SignInController")
-  }
-```
+System(softwareSystemBank, "Bank", "Bank")
+Container(containerAPIApplication, "APIApplication", "APIApplication")
+Container(containerDatabase, "Database", "Database")
+Container(containerSinglePageApplication, "SinglePageApplication", "SinglePageApplication")
+
+
+@enduml```
+````

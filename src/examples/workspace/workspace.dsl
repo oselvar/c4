@@ -1,18 +1,16 @@
 workspace {
   model {
-    groupBigBankPlc = group "Big Bank plc" {
-      softwareSystemBank = softwareSystem "Bank" {
-        containerAPIApplication = container "APIApplication" {
-          componentSecurityComponent = component "SecurityComponent" {
-          }
-          componentSignInController = component "SignInController" {
-          }
+    softwareSystemBank = softwareSystem "Bank" {
+      containerAPIApplication = container "APIApplication" {
+        componentSecurityComponent = component "SecurityComponent" {
         }
-        containerDatabase = container "Database" {
-          tags "database"
+        componentSignInController = component "SignInController" {
         }
-        containerSinglePageApplication = container "SinglePageApplication" {
-        }
+      }
+      containerDatabase = container "Database" {
+        tags "database"
+      }
+      containerSinglePageApplication = container "SinglePageApplication" {
       }
     }
 
