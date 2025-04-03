@@ -3,7 +3,6 @@ import { C4Model } from "../c4Model";
 export function generateStructurizrDSL(model: C4Model): string {
   let dsl = `workspace {\n  model {\n`;
 
-  // Define Systems
   model.systems.forEach((system) => {
     dsl += `    ${system.variableName} = softwareSystem "${system.name}" {\n`;
     system.tags?.forEach((tag) => {

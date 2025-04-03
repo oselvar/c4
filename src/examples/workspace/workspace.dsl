@@ -15,12 +15,12 @@ workspace {
     componentSecurityComponent -> containerDatabase "readCredentials"
     componentSignInController -> componentSecurityComponent "checkCredentials"
   }
-  views {
-    styles {
-      element "Database" {
-        shape cylinder
-      }
+views {
+  styles {
+    element "Database" {
+      shape cylinder
     }
   }
 }
-		
+}
+  

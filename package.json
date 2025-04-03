@@ -42,6 +42,10 @@
     "./structurizr": {
       "types": "./dist/structurizr/index.d.ts",
       "import": "./dist/structurizr/index.js"
+    },
+    "./plantuml": {
+      "types": "./dist/plantuml/index.d.ts",
+      "import": "./dist/plantuml/index.js"
     }
   },
   "files": [
