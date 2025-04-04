@@ -41,7 +41,6 @@ export function renderC4PlantUml(model: C4PumlModel): string {
   }
 
   lines.push("");
-
   for (const rel of model.relationships) {
     lines.push(
       `Rel(${rel.from.variableName}, ${rel.to.variableName}, "${rel.name}")`,

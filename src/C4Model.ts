@@ -17,7 +17,7 @@ export type C4Object = {
   name: string;
   variableName: string;
   tags: readonly string[];
-  parent: string | null;
+  parentName: string | null;
 };
 
 export type C4Model = {

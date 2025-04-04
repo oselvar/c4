@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { C4Model } from "../C4Model";
 import { C4ModelBuilder } from "../C4ModelBuilder";
 import { generateC4PlantUmlModel } from "./generateC4PlantUmlModel";
 import { renderC4PlantUml } from "./renderC4PlantUml";
@@ -95,5 +96,70 @@ Rel(containerSinglePageApp, containerAPIApplication, "Uses")
 Rel(containerWebApplication, containerSinglePageApp, "Delivers")
 `,
     );
+  });
+
+  it("should add relationships", () => {
+    const model: C4Model = {
+      objects: [
+        {
+          type: "component",
+          name: "SecurityComponent",
+          variableName: "componentSecurityComponent",
+          tags: [],
+          parentName: "APIApplication",
+        },
+        {
+          type: "component",
+          name: "SignInController",
+          variableName: "componentSignInController",
+          tags: [],
+          parentName: "APIApplication",
+        },
+        {
+          type: "container",
+          name: "APIApplication",
+          variableName: "containerAPIApplication",
+          tags: [],
+          parentName: "Bank",
+        },
+        {
+          type: "container",
+          name: "Database",
+          variableName: "containerDatabase",
+          tags: ["database"],
+          parentName: "Bank",
+        },
+        {
+          type: "container",
+          name: "SinglePageApplication",
+          variableName: "containerSinglePageApplication",
+          tags: [],
+          parentName: "Bank",
+        },
+        {
+          type: "softwareSystem",
+          name: "Bank",
+          variableName: "softwareSystemBank",
+          tags: [],
+          parentName: null,
+        },
+      ],
+      dependencies: [
+        {
+          callerName: "SecurityComponent",
+          calleeName: "Database",
+          name: "readCredentials",
+        },
+        {
+          callerName: "SignInController",
+          calleeName: "SecurityComponent",
+          name: "checkCredentials",
+        },
+      ],
+    };
+
+    const pumlModel = generateC4PlantUmlModel(model, "Container", "Bank");
+    const output = renderC4PlantUml(pumlModel);
+    console.log(output);
   });
 });

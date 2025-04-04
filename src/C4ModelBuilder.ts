@@ -26,6 +26,10 @@ export class C4ModelBuilder {
     this.objectByName = new Map(
       c4Model.objects.map((object) => [object.name, object]),
     );
+    for (const dependency of c4Model.dependencies) {
+      this.getObject(dependency.callerName);
+      this.getObject(dependency.calleeName);
+    }
     this.dependencyByKey = new Map(
       c4Model.dependencies.map((dependency) => [
         dependencyKey(dependency),
@@ -46,7 +50,7 @@ export class C4ModelBuilder {
       name: this.objectName(name),
       variableName: makeVariableName(type, name),
       tags: params?.tags || [],
-      parent: params?.group || null,
+      parentName: params?.group || null,
     });
     return name;
   }
@@ -61,7 +65,7 @@ export class C4ModelBuilder {
       name: this.objectName(name),
       variableName: makeVariableName(type, name),
       tags: params?.tags || [],
-      parent: params?.group || null,
+      parentName: params?.group || null,
     });
     return name;
   }
@@ -76,7 +80,7 @@ export class C4ModelBuilder {
       name: this.objectName(name),
       variableName: makeVariableName(type, name),
       tags: params?.tags || [],
-      parent: params?.group || null,
+      parentName: params?.group || null,
     });
     return name;
   }
@@ -91,7 +95,7 @@ export class C4ModelBuilder {
       name: this.objectName(name),
       variableName: makeVariableName(type, name),
       tags: params?.tags || [],
-      parent: params.softwareSystem || params.group || null,
+      parentName: params.softwareSystem || params.group || null,
     });
     return name;
   }
@@ -103,7 +107,7 @@ export class C4ModelBuilder {
       name: this.objectName(name),
       variableName: makeVariableName(type, name),
       tags: params?.tags || [],
-      parent: params.container || params.group || null,
+      parentName: params.container || params.group || null,
     });
     return name;
   }
@@ -154,13 +158,13 @@ export class C4ModelBuilder {
 
   children(c4Object: C4Object): readonly C4Object[] {
     return Array.from(this.objectByName.values()).filter(
-      (object) => object.parent === c4Object.name,
+      (object) => object.parentName === c4Object.name,
     );
   }
 
   rootObjects(): readonly C4Object[] {
     return Array.from(this.objectByName.values()).filter(
-      (object) => object.parent === null,
+      (object) => object.parentName === null,
     );
   }
 

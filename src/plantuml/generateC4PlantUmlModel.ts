@@ -73,8 +73,8 @@ export function generateC4PlantUmlModel(
     for (const obj of model.objects) {
       if (
         obj.type === "container" &&
-        obj.parent &&
-        builder.getObject(obj.parent).variableName === root.variableName
+        obj.parentName &&
+        builder.getObject(obj.parentName).variableName === root.variableName
       ) {
         internal.add(obj);
         collect(obj);
@@ -94,8 +94,8 @@ export function generateC4PlantUmlModel(
     for (const obj of model.objects) {
       if (
         obj.type === "component" &&
-        obj.parent &&
-        builder.getObject(obj.parent).variableName === root.variableName
+        obj.parentName &&
+        builder.getObject(obj.parentName).variableName === root.variableName
       ) {
         internal.add(obj);
         collect(obj);
