@@ -1,4 +1,7 @@
-import { RunnerTestCase } from "vitest";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
+
+import { TestCase } from "vitest/node";
 import { Reporter } from "vitest/reporters";
 
 import { C4Model } from "../C4Model";
@@ -10,21 +13,29 @@ export type C4Output = {
 export type C4ModelGenerator = (model: C4Model) => C4Output;
 
 export class C4ModelWriter implements Reporter {
+  private c4Model: C4Model | undefined;
   private readonly generators: C4ModelGenerator[];
+  static setupFile = join(import.meta.dirname, "setup.ts");
 
   constructor(...generators: C4ModelGenerator[]) {
     this.generators = generators;
   }
 
-  async onTestEnd(test: RunnerTestCase) {
-    console.log("TEST META", test.meta);
+  async onTestCaseResult(testCase: TestCase) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.c4Model = testCase.meta().c4Model;
   }
 
   async onTestRunEnd() {
-    // for (const generator of this.generators) {
-    //   const output = generator(globalC4Model.build());
-    //   await writeFile(output.file, output.content);
-    // }
+    if (!this.c4Model) {
+      console.warn("⛔️ No C4 model found");
+      return;
+    }
+    for (const generator of this.generators) {
+      const output = generator(this.c4Model);
+      await writeFile(output.file, output.content);
+    }
     console.log("✅ C4 models updated");
   }
 }

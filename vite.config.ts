@@ -3,10 +3,12 @@ import { defineConfig } from "vitest/config";
 import { generateC4PlantUml } from "./src/plantuml/index";
 import { generateStructurizrDSL } from "./src/structurizr/generateStructurizrDSL";
 import { C4ModelWriter } from "./src/vitest/C4ModelWriter";
+
 export default defineConfig({
   test: {
     isolate: false,
     fileParallelism: false,
+    setupFiles: [C4ModelWriter.setupFile],
     reporters: [
       "default",
       new C4ModelWriter(
