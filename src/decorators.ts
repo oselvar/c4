@@ -20,7 +20,7 @@ export function C4SoftwareSystem<T extends System>(
   params?: C4SoftwareSystemParams,
 ) {
   return (system: T) => {
-    globalC4ModelBuilder.softwareSystem(system.name, { tags: params?.tags });
+    globalC4ModelBuilder.addSoftwareSystem(system.name, { tags: params?.tags });
     return system;
   };
 }
@@ -30,7 +30,7 @@ export function C4Container<T extends Container>({
   tags,
 }: C4ContainerParams) {
   return (container: T) => {
-    globalC4ModelBuilder.container(container.name, {
+    globalC4ModelBuilder.addContainer(container.name, {
       softwareSystem: system,
       tags,
     });
@@ -42,7 +42,7 @@ export function C4Component<T extends Component>({
   container,
 }: C4ComponentParams) {
   return (component: T) => {
-    globalC4ModelBuilder.component(component.name, { container });
+    globalC4ModelBuilder.addComponent(component.name, { container });
     return component;
   };
 }
@@ -86,7 +86,11 @@ function c4OperationWrapper(method: Function) {
 
     if (callerName) {
       const dependencyName = method.name;
-      globalC4ModelBuilder.depencency(callerName, calleeName, dependencyName);
+      globalC4ModelBuilder.addDependency(
+        callerName,
+        calleeName,
+        dependencyName,
+      );
     }
 
     return method.apply(this, args);

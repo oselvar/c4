@@ -36,21 +36,10 @@ export class C4ModelBuilder {
 
   public objectName = (name: string) => name;
 
-  // /**
-  //  * Get all objects in the model.
-  //  */
-  // get objects(): readonly C4Object[] {
-  //   return toC4Objects(this.objectByName);
-  // }
-
-  // get rootObjects(): readonly C4Object[] {
-  //   return this.objects.filter((object) => object.params.group === undefined);
-  // }
-
   /**
    * Add a person to the model.
    */
-  person(name: string, params?: C4PersonParams): string {
+  addPerson(name: string, params?: C4PersonParams): string {
     const type = "person";
     this.objectByName.set(name, {
       type,
@@ -65,7 +54,7 @@ export class C4ModelBuilder {
   /**
    * Add a group to the model.
    */
-  group(name: string, params?: C4GroupParams): string {
+  addGroup(name: string, params?: C4GroupParams): string {
     const type = "group";
     this.objectByName.set(name, {
       type,
@@ -80,7 +69,7 @@ export class C4ModelBuilder {
   /**
    * Add a software system to the model.
    */
-  softwareSystem(name: string, params?: C4SoftwareSystemParams): string {
+  addSoftwareSystem(name: string, params?: C4SoftwareSystemParams): string {
     const type = "softwareSystem";
     this.objectByName.set(name, {
       type,
@@ -95,7 +84,7 @@ export class C4ModelBuilder {
   /**
    * Add a container to the model.
    */
-  container(name: string, params: C4ContainerParams): string {
+  addContainer(name: string, params: C4ContainerParams): string {
     const type = "container";
     this.objectByName.set(name, {
       type,
@@ -107,7 +96,7 @@ export class C4ModelBuilder {
     return name;
   }
 
-  component(name: string, params: C4ComponentParams): string {
+  addComponent(name: string, params: C4ComponentParams): string {
     const type = "component";
     this.objectByName.set(name, {
       type,
@@ -122,7 +111,11 @@ export class C4ModelBuilder {
   /**
    * Add a dependency between two objects.
    */
-  depencency(callerName: string, calleeName: string, dependencyName: string) {
+  addDependency(
+    callerName: string,
+    calleeName: string,
+    dependencyName: string,
+  ) {
     const caller = this.getObject(callerName);
     const callee = this.getObject(calleeName);
 
@@ -153,23 +146,19 @@ export class C4ModelBuilder {
     return c4Object;
   }
 
-  hasObject(name: string) {
-    return this.objectByName.has(name);
-  }
-
-  dependencies(c4Object: C4Object) {
+  dependencies(c4Object: C4Object): readonly C4Dependency[] {
     return Array.from(this.dependencyByKey.values()).filter(
       (dependency) => dependency.callerName === c4Object.name,
     );
   }
 
-  children(c4Object: C4Object) {
+  children(c4Object: C4Object): readonly C4Object[] {
     return Array.from(this.objectByName.values()).filter(
       (object) => object.parent === c4Object.name,
     );
   }
 
-  rootObjects() {
+  rootObjects(): readonly C4Object[] {
     return Array.from(this.objectByName.values()).filter(
       (object) => object.parent === null,
     );

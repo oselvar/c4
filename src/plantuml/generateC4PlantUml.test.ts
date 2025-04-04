@@ -8,62 +8,66 @@ describe("Internet Banking Container Diagram", () => {
   it("should match expected output", () => {
     const builder = new C4ModelBuilder();
 
-    builder.person("Customer");
-    builder.softwareSystem("Internet Banking");
+    builder.addPerson("Customer");
+    builder.addSoftwareSystem("Internet Banking");
 
-    builder.container("Single-Page App", {
+    builder.addContainer("Single-Page App", {
       softwareSystem: "Internet Banking",
       tags: [],
     });
 
-    builder.container("Mobile App", {
+    builder.addContainer("Mobile App", {
       softwareSystem: "Internet Banking",
       tags: ["external"],
     });
 
-    builder.container("Web Application", {
+    builder.addContainer("Web Application", {
       softwareSystem: "Internet Banking",
     });
 
-    builder.container("Database", {
+    builder.addContainer("Database", {
       softwareSystem: "Internet Banking",
       tags: ["database"],
     });
 
-    builder.container("API Application", {
+    builder.addContainer("API Application", {
       softwareSystem: "Internet Banking",
       tags: ["external", "database"],
     });
 
-    builder.softwareSystem("E-Mail System", {
+    builder.addSoftwareSystem("E-Mail System", {
       tags: ["external"],
     });
 
-    builder.softwareSystem("Mainframe Banking System", {
+    builder.addSoftwareSystem("Mainframe Banking System", {
       tags: ["external"],
     });
 
     // relationships
-    builder.depencency("Customer", "Web Application", "Uses");
-    builder.depencency("Customer", "Single-Page App", "Uses");
-    builder.depencency("Customer", "Mobile App", "Uses");
+    builder.addDependency("Customer", "Web Application", "Uses");
+    builder.addDependency("Customer", "Single-Page App", "Uses");
+    builder.addDependency("Customer", "Mobile App", "Uses");
 
-    builder.depencency("Web Application", "Single-Page App", "Delivers");
-    builder.depencency("Single-Page App", "API Application", "Uses");
-    builder.depencency("Mobile App", "API Application", "Uses");
-    builder.depencency(
+    builder.addDependency("Web Application", "Single-Page App", "Delivers");
+    builder.addDependency("Single-Page App", "API Application", "Uses");
+    builder.addDependency("Mobile App", "API Application", "Uses");
+    builder.addDependency(
       "Database",
       "API Application",
       "Reads from and writes to",
     );
 
-    builder.depencency("E-Mail System", "Customer", "Sends e-mails to");
-    builder.depencency(
+    builder.addDependency("E-Mail System", "Customer", "Sends e-mails to");
+    builder.addDependency(
       "API Application",
       "E-Mail System",
       "Sends e-mails using",
     );
-    builder.depencency("API Application", "Mainframe Banking System", "Uses");
+    builder.addDependency(
+      "API Application",
+      "Mainframe Banking System",
+      "Uses",
+    );
 
     const pumlModel = generateC4PlantUmlModel(
       builder.build(),

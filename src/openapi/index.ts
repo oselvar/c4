@@ -27,7 +27,7 @@ export function registerOpenApiComponents(
       if (!operation.operationId) {
         continue;
       }
-      builder.component(operation.operationId, { container });
+      builder.addComponent(operation.operationId, { container });
     }
   }
 }
@@ -64,7 +64,7 @@ export function openapiDependency(
     if (matched) {
       const calleeName = pathItemObject.operationId;
       const dependencyName = `${httpMethod.toUpperCase()} ${pattern}`;
-      builder.depencency(callerName, calleeName, dependencyName);
+      builder.addDependency(callerName, calleeName, dependencyName);
     }
   }
 }
