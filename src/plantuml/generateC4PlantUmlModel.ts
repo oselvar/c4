@@ -96,7 +96,7 @@ export function generateC4PlantUmlModel(
       );
     }
 
-    internal.add(root);
+    // internal.add(root);
 
     for (const obj of model.objects) {
       if (

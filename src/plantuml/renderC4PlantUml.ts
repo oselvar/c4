@@ -12,26 +12,43 @@ export function renderC4PlantUml(model: C4PumlModel): string {
   }
 
   // Then render the container boundary with its containers
-  if (model.root.type === "softwareSystem") {
-    lines.push(
-      `Container_Boundary(${model.root.variableName}, "${model.root.name}") {`,
-    );
-    for (const el of model.internal) {
-      if (el.type === "container") {
-        const isExternal = el.tags.includes("external");
-        const isDatabase = el.tags.includes("database");
-        const typeFn = isDatabase
-          ? isExternal
-            ? "ContainerDb_Ext"
-            : "ContainerDb"
-          : isExternal
-            ? "Container_Ext"
-            : "Container";
-        lines.push(`    ${typeFn}(${el.variableName}, "${el.name}")`);
-      }
-    }
-    lines.push("}");
+  switch (model.root.type) {
+    case "softwareSystem":
+      lines.push(
+        `Container_Boundary(${model.root.variableName}, "${model.root.name}") {`,
+      );
+      break;
+    case "component":
+    case "container":
+      lines.push(
+        `Container_Boundary(${model.root.variableName}, "${model.root.name}") {`,
+      );
+      break;
   }
+  for (const el of model.internal) {
+    switch (el.type) {
+      case "container":
+        {
+          const isExternal = el.tags.includes("external");
+          const isDatabase = el.tags.includes("database");
+          const typeFn = isDatabase
+            ? isExternal
+              ? "ContainerDb_Ext"
+              : "ContainerDb"
+            : isExternal
+              ? "Container_Ext"
+              : "Container";
+          lines.push(`    ${typeFn}(${el.variableName}, "${el.name}")`);
+        }
+        break;
+      case "component":
+        lines.push(`    Component(${el.variableName}, "${el.name}")`);
+        break;
+      // default:
+      // throw new Error(`Unsupported object type: ${el.type}`);
+    }
+  }
+  lines.push("}");
 
   // Then render remaining external systems
   for (const el of model.externals) {
@@ -55,9 +72,9 @@ export function renderC4PlantUml(model: C4PumlModel): string {
 function renderC4Object(obj: C4Object, external: boolean): string {
   const description = obj.name;
   const label = obj.name.replace(/"/g, '\\"'); // escape quotes
-  const typeFn = getPlantUmlKeyword(obj, external);
+  const keyword = getPlantUmlKeyword(obj, external);
 
-  return `${typeFn}(${obj.variableName}, "${label}", "${description}")`;
+  return `${keyword}(${obj.variableName}, "${label}", "${description}")`;
 }
 
 function getPlantUmlKeyword(obj: C4Object, external: boolean): string {
@@ -69,6 +86,6 @@ function getPlantUmlKeyword(obj: C4Object, external: boolean): string {
     case "component":
       return external ? "Component_Ext" : "Component";
     default:
-      return "System"; // fallback for group etc
+      throw new Error(`Unsupported object type: ${obj.type}`);
   }
 }

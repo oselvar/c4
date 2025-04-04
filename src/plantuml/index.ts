@@ -11,9 +11,8 @@ export function generateC4PlantUml(
   objectName: string,
   mermaid: boolean = true,
 ): string {
-  const puml = renderC4PlantUml(
-    generateC4PlantUmlModel(model, diagramType, objectName),
-  );
+  const pumlModel = generateC4PlantUmlModel(model, diagramType, objectName);
+  const puml = renderC4PlantUml(pumlModel);
 
   if (!mermaid) {
     return puml;
