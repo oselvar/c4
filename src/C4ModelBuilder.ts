@@ -160,9 +160,11 @@ export class C4ModelBuilder {
    * Returns all dependencies by the object and its children
    */
   nestedDependencies(c4Object: C4Object): readonly C4Dependency[] {
-    return this.nestedChildren(c4Object).flatMap((child) =>
+    const dependencies = this.dependencies(c4Object);
+    const childDependencies = this.nestedChildren(c4Object).flatMap((child) =>
       this.dependencies(child),
     );
+    return [...dependencies, ...childDependencies];
   }
 
   nestedChildren(c4Object: C4Object): readonly C4Object[] {

@@ -20,10 +20,16 @@ export function generateC4PlantUmlModel(
   };
 
   const collect = (obj: C4Object) => {
-    for (const dep of builder.nestedOutsideDependencies(obj)) {
-      const callee = builder.getObject(dep.calleeName);
+    // console.log("Collecting", obj.name);
+    const dependencies = builder.nestedOutsideDependencies(obj);
+    // console.log(
+    //   "Dependencies",
+    //   dependencies.map((d) => `${d.callerName} -> ${d.calleeName} (${d.name})`)
+    // );
+    for (const dependency of dependencies) {
+      const callee = builder.getObject(dependency.calleeName);
 
-      addRel(obj, callee, dep.name);
+      addRel(obj, callee, dependency.name);
       if (!internal.has(callee)) {
         externals.add(callee);
       }

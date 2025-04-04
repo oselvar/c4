@@ -160,6 +160,13 @@ Rel(containerWebApplication, containerSinglePageApp, "Delivers")
 
     const pumlModel = generateC4PlantUmlModel(model, "Container", "Bank");
     const output = renderC4PlantUml(pumlModel);
-    console.log(output);
+    expect(output).toBe(`Container_Boundary(softwareSystemBank, "Bank") {
+    Container(containerAPIApplication, "APIApplication")
+    ContainerDb(containerDatabase, "Database")
+    Container(containerSinglePageApplication, "SinglePageApplication")
+}
+
+Rel(containerAPIApplication, containerDatabase, "readCredentials")
+`);
   });
 });
