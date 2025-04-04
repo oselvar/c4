@@ -2,7 +2,7 @@ import { createMiddleware } from "hono/factory";
 import type { OpenAPIV3 } from "openapi-types";
 
 import { C4ModelBuilder } from "../C4ModelBuilder";
-import { HttpMethod, openapiDependency } from "../openapi";
+import { addOpenapiDependency, HttpMethod } from "../openapi";
 
 export function c4OpenApiHonoMiddleware(
   builder: C4ModelBuilder,
@@ -13,7 +13,7 @@ export function c4OpenApiHonoMiddleware(
     const httpMethod = c.req.method;
     const path = c.req.path;
     if (callerName) {
-      openapiDependency(
+      addOpenapiDependency(
         builder,
         openapi,
         callerName,

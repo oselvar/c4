@@ -13,7 +13,7 @@ export type HttpMethod =
   | "patch"
   | "trace";
 
-export function registerOpenApiComponents(
+export function addOpenApiComponents(
   builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
   { container }: C4ComponentParams,
@@ -32,7 +32,7 @@ export function registerOpenApiComponents(
   }
 }
 
-export function openapiDependency(
+export function addOpenapiDependency(
   builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
   callerName: string,
