@@ -7,4 +7,5 @@ Container_Boundary(softwareSystemBank, "Bank") {
     Container(containerSinglePageApplication, "SinglePageApplication")
 }
 
+Rel(containerAPIApplication, containerDatabase, "readCredentials")
 ```

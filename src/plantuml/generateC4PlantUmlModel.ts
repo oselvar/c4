@@ -19,12 +19,13 @@ export function generateC4PlantUmlModel(
     relationships.push({ from, to, name });
   };
 
-  const collect = (source: C4Object) => {
-    for (const dep of builder.dependencies(source)) {
-      const target = builder.getObject(dep.calleeName);
-      addRel(source, target, dep.name);
-      if (!internal.has(target)) {
-        externals.add(target);
+  const collect = (obj: C4Object) => {
+    for (const dep of builder.nestedOutsideDependencies(obj)) {
+      const callee = builder.getObject(dep.calleeName);
+
+      addRel(obj, callee, dep.name);
+      if (!internal.has(callee)) {
+        externals.add(callee);
       }
     }
   };

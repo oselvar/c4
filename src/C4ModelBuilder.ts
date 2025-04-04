@@ -156,6 +156,37 @@ export class C4ModelBuilder {
     );
   }
 
+  /**
+   * Returns all dependencies by the object and its children
+   */
+  nestedDependencies(c4Object: C4Object): readonly C4Dependency[] {
+    return this.nestedChildren(c4Object).flatMap((child) =>
+      this.dependencies(child),
+    );
+  }
+
+  nestedChildren(c4Object: C4Object): readonly C4Object[] {
+    const directChildren = this.children(c4Object);
+    return [
+      ...directChildren,
+      ...directChildren.flatMap((child) => this.nestedChildren(child)),
+    ];
+  }
+
+  /**
+   * Returns all nested dependencies that are not inside the object
+   */
+  nestedOutsideDependencies(c4Object: C4Object): readonly C4Dependency[] {
+    const nestedChildNames = new Set(
+      this.nestedChildren(c4Object).map((c) => c.name),
+    );
+    const nestedDependencies = this.nestedDependencies(c4Object);
+    const result = nestedDependencies.filter(
+      (dependency) => !nestedChildNames.has(dependency.calleeName),
+    );
+    return result;
+  }
+
   children(c4Object: C4Object): readonly C4Object[] {
     return Array.from(this.objectByName.values()).filter(
       (object) => object.parentName === c4Object.name,
