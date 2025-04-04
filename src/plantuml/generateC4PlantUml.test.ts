@@ -65,28 +65,23 @@ describe("Internet Banking Container Diagram", () => {
     const output = renderC4PlantUml(pumlModel);
 
     expect(output).toBe(
-      `System_Ext(email_system, "E-Mail System", "The internal Microsoft Exchange system", $tags="v1.0")
-
-Container_Boundary(internetBanking, "Internet Banking") {
-    Container(singlePageApp, "Single-Page App", "Provides all the Internet banking functionality to customers via their web browser", "JavaScript, Angular")
-    Container_Ext(mobileApp, "Mobile App", "Provides a limited subset of the Internet banking functionality to customers via their mobile device", "C#, Xamarin")
-    Container(webApplication, "Web Application", "Delivers the static content and the Internet banking SPA", "Java, Spring MVC")
-    ContainerDb(database, "Database", "Stores user registration information, hashed auth credentials, access logs, etc.", "SQL Database")
-    ContainerDb_Ext(apiApplication, "API Application", "Provides Internet banking functionality via API", "Java, Docker Container")
+      `System_Ext(softwareSystemEMailSystem, "E-Mail System", "E-Mail System")
+System_Ext(softwareSystemMainframeBankingSystem, "Mainframe Banking System", "Mainframe Banking System")
+Container_Boundary(softwareSystemInternetBanking, "Internet Banking") {
+    ContainerDb_Ext(containerAPIApplication, "API Application")
+    ContainerDb(containerDatabase, "Database")
+    Container_Ext(containerMobileApp, "Mobile App")
+    Container(containerSinglePageApp, "Single-Page App")
+    Container(containerWebApplication, "Web Application")
 }
 
-System_Ext(mainframeBankingSystem, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
-
-Rel(customer, webApplication, "Uses", "HTTPS")
-Rel(customer, singlePageApp, "Uses", "HTTPS")
-Rel(customer, mobileApp, "Uses")
-Rel(webApplication, singlePageApp, "Delivers")
-Rel(singlePageApp, apiApplication, "Uses", "async, JSON/HTTPS")
-Rel(mobileApp, apiApplication, "Uses", "async, JSON/HTTPS")
-Rel(database, apiApplication, "Reads from and writes to", "sync, JDBC")
-Rel(email_system, customer, "Sends e-mails to")
-Rel(apiApplication, email_system, "Sends e-mails using", "sync, SMTP")
-Rel(apiApplication, mainframeBankingSystem, "Uses", "sync/async, XML/HTTPS")`,
+Rel(containerAPIApplication, softwareSystemEMailSystem, "Sends e-mails using")
+Rel(containerAPIApplication, softwareSystemMainframeBankingSystem, "Uses")
+Rel(containerDatabase, containerAPIApplication, "Reads from and writes to")
+Rel(containerMobileApp, containerAPIApplication, "Uses")
+Rel(containerSinglePageApp, containerAPIApplication, "Uses")
+Rel(containerWebApplication, containerSinglePageApp, "Delivers")
+`,
     );
   });
 });

@@ -4,12 +4,40 @@ import { C4PumlModel } from "./PlantUMLModel";
 export function renderC4PlantUml(model: C4PumlModel): string {
   const lines: string[] = [];
 
-  for (const el of model.internal) {
-    lines.push(renderC4Object(el, false));
+  // First render external systems
+  for (const el of model.externals) {
+    if (el.type === "softwareSystem") {
+      lines.push(renderC4Object(el, true));
+    }
   }
 
+  // Then render the container boundary with its containers
+  if (model.root.type === "softwareSystem") {
+    lines.push(
+      `Container_Boundary(${model.root.variableName}, "${model.root.name}") {`,
+    );
+    for (const el of model.internal) {
+      if (el.type === "container") {
+        const isExternal = el.tags.includes("external");
+        const isDatabase = el.tags.includes("database");
+        const typeFn = isDatabase
+          ? isExternal
+            ? "ContainerDb_Ext"
+            : "ContainerDb"
+          : isExternal
+            ? "Container_Ext"
+            : "Container";
+        lines.push(`    ${typeFn}(${el.variableName}, "${el.name}")`);
+      }
+    }
+    lines.push("}");
+  }
+
+  // Then render remaining external systems
   for (const el of model.externals) {
-    lines.push(renderC4Object(el, true));
+    if (el.type !== "softwareSystem") {
+      lines.push(renderC4Object(el, true));
+    }
   }
 
   lines.push("");

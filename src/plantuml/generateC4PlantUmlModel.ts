@@ -1,9 +1,7 @@
 import { C4Model, C4Object } from "../c4Model";
-import {
-  C4PumlModel,
-  C4RenderedRelationship,
-  DiagramType,
-} from "./PlantUMLModel";
+import { C4PumlModel, C4RenderedRelationship } from "./PlantUMLModel";
+
+export type DiagramType = "SystemContext" | "Container" | "Component";
 
 export function generateC4PlantUmlModel(
   model: C4Model,
