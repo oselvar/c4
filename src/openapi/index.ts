@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { match } from "path-to-regexp";
 
-import { C4ComponentParams, C4Model } from "../c4Model";
+import { C4ComponentParams, C4ModelBuilder } from "../C4ModelBuilder";
 
 export type HttpMethod =
   | "get"
@@ -14,7 +14,7 @@ export type HttpMethod =
   | "trace";
 
 export function registerOpenApiComponents(
-  model: C4Model,
+  builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
   { container }: C4ComponentParams,
 ) {
@@ -27,13 +27,13 @@ export function registerOpenApiComponents(
       if (!operation.operationId) {
         continue;
       }
-      model.component(operation.operationId, { container });
+      builder.component(operation.operationId, { container });
     }
   }
 }
 
 export function openapiDependency(
-  model: C4Model,
+  builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
   callerName: string,
   httpMethod: HttpMethod,
@@ -64,7 +64,7 @@ export function openapiDependency(
     if (matched) {
       const calleeName = pathItemObject.operationId;
       const dependencyName = `${httpMethod.toUpperCase()} ${pattern}`;
-      model.depencency(callerName, calleeName, dependencyName);
+      builder.depencency(callerName, calleeName, dependencyName);
     }
   }
 }

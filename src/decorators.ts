@@ -7,8 +7,9 @@ import {
   type C4ComponentParams,
   type C4ContainerParams,
   type C4SoftwareSystemParams,
-} from "./c4Model";
+} from "./C4ModelBuilder";
 import { globalC4Model } from "./globalC4Model";
+
 type Constructor<T = object> = new (...args: any[]) => T;
 
 type System = Constructor;

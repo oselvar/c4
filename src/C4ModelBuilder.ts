@@ -1,0 +1,198 @@
+import { C4Dependency, C4Model, C4Object } from "./c4ModelZ";
+
+export type C4ObjectParams = {
+  group?: string;
+  tags?: readonly string[];
+};
+
+export type C4SoftwareSystemParams = C4ObjectParams;
+export type C4GroupParams = C4ObjectParams;
+export type C4PersonParams = C4ObjectParams;
+
+export type C4ContainerParams = C4ObjectParams & {
+  softwareSystem: string;
+};
+
+export type C4ComponentParams = C4ObjectParams & {
+  container: string;
+};
+
+// Builder classes for constructing the C4 model
+export class C4ModelBuilder {
+  private readonly objectByName = new Map<string, C4Object>();
+  private readonly dependencyByKey = new Map<string, C4Dependency>();
+
+  constructor(c4Model: C4Model = { objects: [], dependencies: [] }) {
+    this.objectByName = new Map(
+      c4Model.objects.map((object) => [object.name, object]),
+    );
+    this.dependencyByKey = new Map(
+      c4Model.dependencies.map((dependency) => [
+        dependencyKey(dependency),
+        dependency,
+      ]),
+    );
+  }
+
+  public objectName = (name: string) => name;
+
+  // /**
+  //  * Get all objects in the model.
+  //  */
+  // get objects(): readonly C4Object[] {
+  //   return toC4Objects(this.objectByName);
+  // }
+
+  // get rootObjects(): readonly C4Object[] {
+  //   return this.objects.filter((object) => object.params.group === undefined);
+  // }
+
+  /**
+   * Add a person to the model.
+   */
+  person(name: string, params?: C4PersonParams): string {
+    this.objectByName.set(name, {
+      type: "person",
+      name: this.objectName(name),
+      variableName: camelCase(name),
+      tags: params?.tags || [],
+      parent: params?.group || null,
+    });
+    return name;
+  }
+
+  /**
+   * Add a group to the model.
+   */
+  group(name: string, params?: C4GroupParams): string {
+    this.objectByName.set(name, {
+      type: "group",
+      name: this.objectName(name),
+      variableName: camelCase(name),
+      tags: params?.tags || [],
+      parent: params?.group || null,
+    });
+    return name;
+  }
+
+  /**
+   * Add a software system to the model.
+   */
+  softwareSystem(name: string, params?: C4SoftwareSystemParams): string {
+    this.objectByName.set(name, {
+      type: "softwareSystem",
+      name: this.objectName(name),
+      variableName: camelCase(name),
+      tags: params?.tags || [],
+      parent: params?.group || null,
+    });
+    return name;
+  }
+
+  /**
+   * Add a container to the model.
+   */
+  container(name: string, params: C4ContainerParams): string {
+    this.objectByName.set(name, {
+      type: "container",
+      name: this.objectName(name),
+      variableName: camelCase(name),
+      tags: params?.tags || [],
+      parent: params.softwareSystem || params.group || null,
+    });
+    return name;
+  }
+
+  component(name: string, params: C4ComponentParams): string {
+    this.objectByName.set(name, {
+      type: "component",
+      name: this.objectName(name),
+      variableName: camelCase(name),
+      tags: params?.tags || [],
+      parent: params.container || params.group || null,
+    });
+    return name;
+  }
+
+  /**
+   * Add a dependency between two objects.
+   */
+  depencency(callerName: string, calleeName: string, dependencyName: string) {
+    const caller = this.getObject(callerName);
+    const callee = this.getObject(calleeName);
+
+    const dependency: C4Dependency = {
+      callerName: caller.name,
+      calleeName: callee.name,
+      name: dependencyName,
+    };
+    this.dependencyByKey.set(dependencyKey(dependency), dependency);
+  }
+
+  /**
+   * Get an object by name.
+   */
+  getObject(name: string): C4Object {
+    const c4Object = this.objectByName.get(name);
+    if (!c4Object) {
+      const c4Objects = Array.from(this.objectByName.keys());
+      throw new Error(
+        `C4 object "${name}" not found. Make sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
+          c4Objects,
+          null,
+          2,
+        )}`,
+      );
+    }
+
+    return c4Object;
+  }
+
+  hasObject(name: string) {
+    return this.objectByName.has(name);
+  }
+
+  dependencies(c4Object: C4Object) {
+    return Array.from(this.dependencyByKey.values()).filter(
+      (dependency) => dependency.callerName === c4Object.name,
+    );
+  }
+
+  children(c4Object: C4Object) {
+    return Array.from(this.objectByName.values()).filter(
+      (object) => object.parent === c4Object.name,
+    );
+  }
+
+  rootObjects() {
+    return Array.from(this.objectByName.values()).filter(
+      (object) => object.parent === null,
+    );
+  }
+
+  /**
+   * Build the final C4 model
+   */
+  build(): C4Model {
+    return {
+      objects: Array.from(this.objectByName.values()).sort((a, b) =>
+        objectKey(a).localeCompare(objectKey(b)),
+      ),
+      dependencies: Array.from(this.dependencyByKey.values()).sort((a, b) =>
+        dependencyKey(a).localeCompare(dependencyKey(b)),
+      ),
+    };
+  }
+}
+
+function dependencyKey(dependency: C4Dependency) {
+  return `${dependency.callerName}-${dependency.calleeName}-${dependency.name}`;
+}
+
+function objectKey(object: C4Object) {
+  return `${object.type}${camelCase(object.name)}`;
+}
+
+function camelCase(words: string) {
+  return words.replace(/(?:^|[\s-_])(\w)/g, (_, char) => char.toUpperCase());
+}

@@ -1,4 +1,5 @@
-import { C4Model, C4Object } from "../c4Model";
+import { C4ModelBuilder } from "../C4ModelBuilder";
+import { C4Model, C4Object } from "../c4ModelZ";
 import { C4PumlModel, C4RenderedRelationship } from "./PlantUMLModel";
 
 export type DiagramType = "SystemContext" | "Container" | "Component";
@@ -8,7 +9,8 @@ export function generateC4PlantUmlModel(
   diagramType: DiagramType,
   objectName: string,
 ): C4PumlModel {
-  const root = model.getObject(objectName);
+  const builder = new C4ModelBuilder(model);
+  const root = builder.getObject(objectName);
   const internal = new Set<C4Object>();
   const externals = new Set<C4Object>();
   const relationships: C4RenderedRelationship[] = [];
@@ -18,8 +20,8 @@ export function generateC4PlantUmlModel(
   };
 
   const collect = (source: C4Object) => {
-    for (const dep of source.dependencies) {
-      const target = dep.callee;
+    for (const dep of builder.dependencies(source)) {
+      const target = builder.getObject(dep.calleeName);
       addRel(source, target, dep.name);
       if (!internal.has(target)) {
         externals.add(target);
@@ -39,15 +41,19 @@ export function generateC4PlantUmlModel(
     for (const obj of model.objects) {
       if (obj === root) continue;
 
-      for (const dep of obj.dependencies) {
-        if (dep.callee === root) {
+      for (const dep of builder.dependencies(obj)) {
+        if (
+          builder.getObject(dep.calleeName).variableName === root.variableName
+        ) {
           internal.add(obj);
           addRel(obj, root, dep.name);
         }
       }
 
-      for (const dep of root.dependencies) {
-        if (dep.callee === obj) {
+      for (const dep of builder.dependencies(root)) {
+        if (
+          builder.getObject(dep.calleeName).variableName === obj.variableName
+        ) {
           internal.add(obj);
           addRel(root, obj, dep.name);
         }
@@ -65,7 +71,11 @@ export function generateC4PlantUmlModel(
     internal.add(root);
 
     for (const obj of model.objects) {
-      if (obj.type === "container" && obj.parent === root) {
+      if (
+        obj.type === "container" &&
+        obj.parent &&
+        builder.getObject(obj.parent).variableName === root.variableName
+      ) {
         internal.add(obj);
         collect(obj);
       }
@@ -82,7 +92,11 @@ export function generateC4PlantUmlModel(
     internal.add(root);
 
     for (const obj of model.objects) {
-      if (obj.type === "component" && obj.parent === root) {
+      if (
+        obj.type === "component" &&
+        obj.parent &&
+        builder.getObject(obj.parent).variableName === root.variableName
+      ) {
         internal.add(obj);
         collect(obj);
       }

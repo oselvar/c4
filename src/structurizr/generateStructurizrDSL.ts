@@ -1,12 +1,15 @@
-import { C4Model, C4Object } from "../c4Model";
+import { C4ModelBuilder } from "../C4ModelBuilder";
+import { C4Model, C4Object } from "../c4ModelZ";
 
 export function generateStructurizrDSL(model: C4Model): string {
+  const builder = new C4ModelBuilder(model);
+
   let s = `workspace {\n  model {\n`;
-  s += recursiveWalk(model.rootObjects, 2);
+  s += recursiveWalk(builder.rootObjects(), builder, 2);
   s += "\n\n";
-  model.objects.forEach((c4Object) => {
-    c4Object.dependencies.forEach((dependency) => {
-      s += `    ${c4Object.variableName} -> ${dependency.callee.variableName} "${dependency.name}"\n`;
+  model.objects.forEach((object) => {
+    builder.dependencies(object).forEach((dependency) => {
+      s += `    ${object.variableName} -> ${builder.getObject(dependency.calleeName).variableName} "${dependency.name}"\n`;
     });
   });
 
@@ -21,20 +24,24 @@ export function generateStructurizrDSL(model: C4Model): string {
 `;
 
   s += `  }\n}\n`;
-
-  //   }
-  // }
-  //   `;
   return s;
 }
 
-function recursiveWalk(objects: readonly C4Object[], indent: number): string {
+function recursiveWalk(
+  objects: readonly C4Object[],
+  builder: C4ModelBuilder,
+  indent: number,
+): string {
   const s = "  ".repeat(indent);
   return objects
     .map((object) => {
       const line = `${s}${object.variableName} = ${object.type} "${object.name}" {`;
       const tags = object.tags.map((tag) => `${s}  tags "${tag}"`).join("\n");
-      const children = recursiveWalk(object.children, indent + 1);
+      const children = recursiveWalk(
+        builder.children(object),
+        builder,
+        indent + 1,
+      );
       const close = `${s}}`;
       return [line, tags, children, close].filter(Boolean).join("\n");
     })
