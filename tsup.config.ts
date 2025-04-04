@@ -10,6 +10,7 @@ export default defineConfig({
     "src/structurizr/index.ts",
     "src/plantuml/index.ts",
     "src/openapi/index.ts",
+    "src/vitest/index.ts",
   ],
   splitting: false,
   sourcemap: true,

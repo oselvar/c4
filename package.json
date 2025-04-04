@@ -50,6 +50,10 @@
     "./openapi": {
       "types": "./dist/openapi/index.d.ts",
       "import": "./dist/openapi/index.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest/index.d.ts",
+      "import": "./dist/vitest/index.js"
     }
   },
   "files": [
