@@ -1,4 +1,4 @@
-import { C4Model } from "../c4ModelZ";
+import { C4Model } from "../C4Model";
 import {
   DiagramType,
   generateC4PlantUmlModel,

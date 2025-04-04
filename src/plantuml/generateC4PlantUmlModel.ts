@@ -1,5 +1,5 @@
+import { C4Model, C4Object } from "../C4Model";
 import { C4ModelBuilder } from "../C4ModelBuilder";
-import { C4Model, C4Object } from "../c4ModelZ";
 import { C4PumlModel, C4RenderedRelationship } from "./PlantUMLModel";
 
 export type DiagramType = "SystemContext" | "Container" | "Component";

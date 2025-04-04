@@ -1,4 +1,4 @@
-import { C4Object } from "../c4ModelZ";
+import { C4Object } from "../C4Model";
 
 export type C4RenderedRelationship = {
   from: C4Object;

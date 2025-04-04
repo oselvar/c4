@@ -1,5 +1,5 @@
+import { C4Model, C4Object } from "../C4Model";
 import { C4ModelBuilder } from "../C4ModelBuilder";
-import { C4Model, C4Object } from "../c4ModelZ";
 
 export function generateStructurizrDSL(model: C4Model): string {
   const builder = new C4ModelBuilder(model);

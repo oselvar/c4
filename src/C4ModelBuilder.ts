@@ -1,4 +1,4 @@
-import { C4Dependency, C4Model, C4Object } from "./c4ModelZ";
+import { C4Dependency, C4Model, C4Object } from "./C4Model";
 
 export type C4ObjectParams = {
   group?: string;
@@ -51,10 +51,11 @@ export class C4ModelBuilder {
    * Add a person to the model.
    */
   person(name: string, params?: C4PersonParams): string {
+    const type = "person";
     this.objectByName.set(name, {
-      type: "person",
+      type,
       name: this.objectName(name),
-      variableName: camelCase(name),
+      variableName: makeVariableName(type, name),
       tags: params?.tags || [],
       parent: params?.group || null,
     });
@@ -65,10 +66,11 @@ export class C4ModelBuilder {
    * Add a group to the model.
    */
   group(name: string, params?: C4GroupParams): string {
+    const type = "group";
     this.objectByName.set(name, {
-      type: "group",
+      type,
       name: this.objectName(name),
-      variableName: camelCase(name),
+      variableName: makeVariableName(type, name),
       tags: params?.tags || [],
       parent: params?.group || null,
     });
@@ -79,10 +81,11 @@ export class C4ModelBuilder {
    * Add a software system to the model.
    */
   softwareSystem(name: string, params?: C4SoftwareSystemParams): string {
+    const type = "softwareSystem";
     this.objectByName.set(name, {
-      type: "softwareSystem",
+      type,
       name: this.objectName(name),
-      variableName: camelCase(name),
+      variableName: makeVariableName(type, name),
       tags: params?.tags || [],
       parent: params?.group || null,
     });
@@ -93,10 +96,11 @@ export class C4ModelBuilder {
    * Add a container to the model.
    */
   container(name: string, params: C4ContainerParams): string {
+    const type = "container";
     this.objectByName.set(name, {
-      type: "container",
+      type,
       name: this.objectName(name),
-      variableName: camelCase(name),
+      variableName: makeVariableName(type, name),
       tags: params?.tags || [],
       parent: params.softwareSystem || params.group || null,
     });
@@ -104,10 +108,11 @@ export class C4ModelBuilder {
   }
 
   component(name: string, params: C4ComponentParams): string {
+    const type = "component";
     this.objectByName.set(name, {
-      type: "component",
+      type,
       name: this.objectName(name),
-      variableName: camelCase(name),
+      variableName: makeVariableName(type, name),
       tags: params?.tags || [],
       parent: params.container || params.group || null,
     });
@@ -193,6 +198,14 @@ function objectKey(object: C4Object) {
   return `${object.type}${camelCase(object.name)}`;
 }
 
+function makeVariableName(type: string, words: string) {
+  return camelCase(`${type} ${words}`);
+}
+
 function camelCase(words: string) {
-  return words.replace(/(?:^|[\s-_])(\w)/g, (_, char) => char.toUpperCase());
+  const upperCamelCase = words.replace(/(?:^|[\s-_])(\w)/g, (_, char) =>
+    char.toUpperCase(),
+  );
+  // Lowercase the first letter
+  return upperCamelCase.replace(/^[A-Z]/, (char) => char.toLowerCase());
 }

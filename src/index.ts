@@ -1,2 +1,2 @@
-export * from "./c4ModelZ";
+export * from "./C4Model";
 export * from "./decorators";

@@ -8,7 +8,7 @@ import {
   type C4ContainerParams,
   type C4SoftwareSystemParams,
 } from "./C4ModelBuilder";
-import { globalC4Model } from "./globalC4Model";
+import { globalC4ModelBuilder } from "./globalC4ModelBuilder";
 
 type Constructor<T = object> = new (...args: any[]) => T;
 
@@ -20,7 +20,7 @@ export function C4SoftwareSystem<T extends System>(
   params?: C4SoftwareSystemParams,
 ) {
   return (system: T) => {
-    globalC4Model.softwareSystem(system.name, { tags: params?.tags });
+    globalC4ModelBuilder.softwareSystem(system.name, { tags: params?.tags });
     return system;
   };
 }
@@ -30,7 +30,10 @@ export function C4Container<T extends Container>({
   tags,
 }: C4ContainerParams) {
   return (container: T) => {
-    globalC4Model.container(container.name, { softwareSystem: system, tags });
+    globalC4ModelBuilder.container(container.name, {
+      softwareSystem: system,
+      tags,
+    });
     return container;
   };
 }
@@ -39,7 +42,7 @@ export function C4Component<T extends Component>({
   container,
 }: C4ComponentParams) {
   return (component: T) => {
-    globalC4Model.component(component.name, { container });
+    globalC4ModelBuilder.component(component.name, { container });
     return component;
   };
 }
@@ -83,7 +86,7 @@ function c4OperationWrapper(method: Function) {
 
     if (callerName) {
       const dependencyName = method.name;
-      globalC4Model.depencency(callerName, calleeName, dependencyName);
+      globalC4ModelBuilder.depencency(callerName, calleeName, dependencyName);
     }
 
     return method.apply(this, args);

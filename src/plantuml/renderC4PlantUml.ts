@@ -1,4 +1,4 @@
-import { C4Object } from "../c4ModelZ";
+import { C4Object } from "../C4Model";
 import { C4PumlModel } from "./PlantUMLModel";
 
 export function renderC4PlantUml(model: C4PumlModel): string {

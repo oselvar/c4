@@ -1,7 +1,7 @@
 import { RunnerTestCase } from "vitest";
 import { Reporter } from "vitest/reporters";
 
-import { C4Model } from "../c4ModelZ";
+import { C4Model } from "../C4Model";
 
 export type C4Output = {
   file: string;
