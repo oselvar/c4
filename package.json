@@ -1,6 +1,6 @@
 {
   "name": "@oselvar/c4",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Test helpers for Cloudflare Workers",
   "bin": {
     "c4": "./dist/index.js"
