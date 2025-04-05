@@ -3,7 +3,7 @@
 Generate C4 models from TypeScript source code:
 
 - Context / Container / Component diagrams based on decorators:
-  - `@C4System`
+  - `@C4SoftwareSystem`
   - `@C4Container`
   - `@C4Component`
   - `@C4Operation`
@@ -79,7 +79,7 @@ There are several ways to register C4 objects:
 
 ### Decorators
 
-Annotate classes with `@C4System`, `@C4Container`, and `@C4Component` decorators to specify the C4 object type the class represents.
+Annotate classes with `@C4SoftwareSystem`, `@C4Container`, and `@C4Component` decorators to specify the C4 object type the class represents.
 
 Annotate Component methods with the `@C4Operation` decorator.
 
@@ -96,9 +96,10 @@ Set the `X-C4-Caller` header to the name of the caller.
 
 ## Usage with Vitest
 
-In order to keep a single instance of the C4Model, we need to disable
-parallelism and isolation in `vite.config.ts`. We also need to add a
-`setupFiles` option to write the DSL to a file at the end of a test run.
+Add a `C4ModelWriter` to `reporters` and configure it with the diagrams you wish to create.
+You also need to add `C4ModelWriter.setupFile` to `setupFiles`.
+
+Finally you have to to disable isolates and file parallelism as shown below:
 
 ```ts
 // vite.config.ts
@@ -106,22 +107,24 @@ export default defineConfig({
   test: {
     isolate: false,
     fileParallelism: false,
-    setupFiles: ["src/lib/c4/write-structurizr-dsl.ts"],
-
-    // Optional:
-    sequence: {
-      concurrent: false,
-    },
+    setupFiles: [C4ModelWriter.setupFile],
+    reporters: [
+      "default",
+      new C4ModelWriter(
+        (c4Model) => ({
+          file: "src/examples/system-context-bank.md",
+          content: generateC4PlantUml(c4Model, "SystemContext", "Bank"),
+        }),
+        (c4Model) => ({
+          file: "src/examples/container-bank.md",
+          content: generateC4PlantUml(c4Model, "Container", "Bank"),
+        }),
+        (c4Model) => ({
+          file: "src/examples/component-api-application.md",
+          content: generateC4PlantUml(c4Model, "Component", "APIApplication"),
+        }),
+      ),
+    ],
   },
-});
-```
-
-```ts
-// src/lib/c4/write-structurizr-dsl.ts
-import { c4Model } from "$lib/structurizrgen/c4Model";
-
-afterAll(async () => {
-  const dsl = c4Model.generateStructurizrDSL();
-  await writeFile("doc/structurizr/workspace/workspace.dsl", dsl);
 });
 ```
