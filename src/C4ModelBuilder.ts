@@ -1,3 +1,5 @@
+import { closest } from "fastest-levenshtein";
+
 import { C4Dependency, C4Model, C4Object } from "./C4Model";
 
 export type C4ObjectParams = {
@@ -142,8 +144,10 @@ export class C4ModelBuilder {
     const c4Object = this.objectByName.get(name);
     if (!c4Object) {
       const c4Objects = Array.from(this.objectByName.keys());
+      const maybe = closest(name, c4Objects);
+      const didYouMean = maybe ? `\nDid you mean "${maybe}"?` : "";
       throw new Error(
-        `C4 object "${name}" not found. Make sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
+        `C4 object "${name}" not found.${didYouMean}\nMake sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
           c4Objects,
           null,
           2,

@@ -17,12 +17,16 @@ export default defineConfig({
           content: generateStructurizrDSL(c4Model),
         }),
         (c4Model) => ({
-          file: "src/examples/system-context.md",
+          file: "src/examples/system-context-bank.md",
           content: generateC4PlantUml(c4Model, "SystemContext", "Bank"),
         }),
         (c4Model) => ({
-          file: "src/examples/container-api-application.md",
+          file: "src/examples/container-bank.md",
           content: generateC4PlantUml(c4Model, "Container", "Bank"),
+        }),
+        (c4Model) => ({
+          file: "src/examples/component-api-application.md",
+          content: generateC4PlantUml(c4Model, "Component", "APIApplication"),
         }),
       ),
     ],
