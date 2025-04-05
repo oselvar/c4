@@ -1,5 +1,6 @@
 {
   "name": "@oselvar/c4",
+  "private": false,
   "version": "0.0.1",
   "description": "Test helpers for Cloudflare Workers",
   "bin": {
