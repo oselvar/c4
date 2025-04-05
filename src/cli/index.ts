@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { existsSync } from "node:fs";
 
 import { Command, InvalidArgumentError } from "commander";
@@ -48,7 +50,7 @@ program
           break;
         }
       }
-    },
+    }
   );
 
 program.parse(process.argv);
