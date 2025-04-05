@@ -4,7 +4,7 @@
   "version": "0.0.2",
   "description": "Test helpers for Cloudflare Workers",
   "bin": {
-    "c4": "./dist/index.js"
+    "c4": "dist/index.js"
   },
   "keywords": [
     "c4",
