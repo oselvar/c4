@@ -1,9 +1,9 @@
 import { writeFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 
-import { TestCase } from "vitest/node";
+// import { TestCase } from "vitest/node";
+import { Reporter } from "vitest/reporters";
 
-// import { Reporter } from "vitest/reporters";
 import { C4Model } from "../C4Model";
 
 export type C4Output = {
@@ -12,7 +12,7 @@ export type C4Output = {
 };
 export type C4ModelGenerator = (model: C4Model) => C4Output;
 
-export class C4ModelWriter {
+export class C4ModelWriter implements Reporter {
   private c4Model: C4Model | undefined;
   private readonly generators: C4ModelGenerator[];
   static setupFile = join(
@@ -24,7 +24,8 @@ export class C4ModelWriter {
     this.generators = generators;
   }
 
-  async onTestCaseResult(testCase: TestCase) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async onTestCaseResult(testCase: any) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.c4Model = testCase.meta().c4Model;
