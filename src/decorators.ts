@@ -3,6 +3,7 @@
 
 import { basename, extname } from "node:path";
 
+import debug from "debug";
 import ErrorStackParser from "error-stack-parser";
 
 import {
@@ -17,6 +18,8 @@ type Constructor<T = object> = new (...args: any[]) => T;
 type System = Constructor;
 type Container = Constructor;
 type Component = Constructor;
+
+const log = debug("@oselvar/c4");
 
 export function C4SoftwareSystem<T extends System>(
   params?: C4SoftwareSystemParams,
@@ -83,7 +86,7 @@ function c4OperationWrapper(method: Function) {
       .flatMap(toClassNames);
 
     if (callerClassNameCandidates.length === 0) {
-      console.warn(
+      log(
         `@oselvar/c4: Could not determine any caller class names from stack: ${JSON.stringify(stack)}`,
       );
     }
@@ -94,7 +97,7 @@ function c4OperationWrapper(method: Function) {
     );
 
     if (!callerName) {
-      console.warn(
+      log(
         `@oselvar/c4:  No caller for ${calleeName}: ${JSON.stringify(stack, null, 2)}`,
       );
     }
