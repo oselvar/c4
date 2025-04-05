@@ -9,7 +9,7 @@ export function generateC4PlantUml(
   model: C4Model,
   diagramType: DiagramType,
   objectName: string,
-  mermaid: boolean = true,
+  mermaid: boolean = true
 ): string {
   const pumlModel = generateC4PlantUmlModel(model, diagramType, objectName);
   const puml = renderC4PlantUml(pumlModel);
@@ -28,5 +28,5 @@ export function generateC4PlantUml(
 }
 
 function gfmMermaid(mermaid: string): string {
-  return `\`\`\`mermaid\n${mermaid}\`\`\``;
+  return `\`\`\`mermaid\n${mermaid}\`\`\`\n`;
 }
