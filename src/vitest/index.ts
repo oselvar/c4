@@ -1,1 +1,1 @@
-export * from "../C4ModelBuilder";
+export * from "./C4ModelWriter";

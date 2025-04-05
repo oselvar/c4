@@ -131,6 +131,10 @@ export class C4ModelBuilder {
     this.dependencyByKey.set(dependencyKey(dependency), dependency);
   }
 
+  hasObject(name: string): boolean {
+    return this.objectByName.has(name);
+  }
+
   /**
    * Get an object by name.
    */

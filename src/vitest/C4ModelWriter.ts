@@ -1,9 +1,9 @@
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { extname, join } from "node:path";
 
 import { TestCase } from "vitest/node";
-import { Reporter } from "vitest/reporters";
 
+// import { Reporter } from "vitest/reporters";
 import { C4Model } from "../C4Model";
 
 export type C4Output = {
@@ -12,10 +12,13 @@ export type C4Output = {
 };
 export type C4ModelGenerator = (model: C4Model) => C4Output;
 
-export class C4ModelWriter implements Reporter {
+export class C4ModelWriter {
   private c4Model: C4Model | undefined;
   private readonly generators: C4ModelGenerator[];
-  static setupFile = join(import.meta.dirname, "setup.ts");
+  static setupFile = join(
+    import.meta.dirname,
+    "setup" + extname(import.meta.url),
+  );
 
   constructor(...generators: C4ModelGenerator[]) {
     this.generators = generators;

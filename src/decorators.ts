@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
+import { basename, extname } from "node:path";
+
 import ErrorStackParser from "error-stack-parser";
 
 import {
@@ -74,15 +76,28 @@ function c4OperationWrapper(method: Function) {
   function wrapper(this: Function, ...args: unknown[]) {
     const calleeName = this.constructor.name;
 
-    const caller = ErrorStackParser.parse(new Error())
+    const stack = ErrorStackParser.parse(new Error());
+    const callerClassNameCandidates = stack
       .filter((frame) => !frame.fileName?.match(/\/node_modules\//))
       .filter((frame) => !frame.fileName?.match(/^node:internal/))
-      .filter((frame) => frame.functionName?.split(".").length === 2)
-      .map((frame) => frame.functionName?.split(".") || [])
-      .map(([className, method]) => ({ className, method }))
-      .filter(({ className }) => className !== calleeName)[0];
+      .flatMap(toClassNames);
 
-    const callerName = caller?.className;
+    if (callerClassNameCandidates.length === 0) {
+      console.warn(
+        `@oselvar/c4: Could not determine any caller class names from stack: ${JSON.stringify(stack)}`,
+      );
+    }
+
+    const callerName = callerClassNameCandidates.find(
+      (callerName) =>
+        callerName !== calleeName && globalC4ModelBuilder.hasObject(callerName),
+    );
+
+    if (!callerName) {
+      console.warn(
+        `@oselvar/c4:  No caller for ${calleeName}: ${JSON.stringify(stack, null, 2)}`,
+      );
+    }
 
     if (callerName) {
       const dependencyName = method.name;
@@ -96,4 +111,16 @@ function c4OperationWrapper(method: Function) {
     return method.apply(this, args);
   }
   return wrapper;
+}
+
+function toClassNames(frame: ErrorStackParser.StackFrame): readonly string[] {
+  const classNames: string[] = [];
+  const functioNameParts = frame.functionName?.split(".") || [];
+  if (functioNameParts.length === 2) {
+    classNames.push(functioNameParts[0]);
+  }
+  if (frame.fileName) {
+    classNames.push(basename(frame.fileName, extname(frame.fileName)));
+  }
+  return classNames;
 }
