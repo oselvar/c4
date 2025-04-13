@@ -15,13 +15,13 @@ import { globalC4ModelBuilder } from "./globalC4ModelBuilder";
 
 type Constructor<T = object> = new (...args: any[]) => T;
 
-type System = Constructor;
+type SoftwareSystem = Constructor;
 type Container = Constructor;
 type Component = Constructor;
 
 const log = debug("@oselvar/c4");
 
-export function C4SoftwareSystem<T extends System>(
+export function C4SoftwareSystem<T extends SoftwareSystem>(
   params?: C4SoftwareSystemParams,
 ) {
   return (system: T) => {
@@ -31,12 +31,12 @@ export function C4SoftwareSystem<T extends System>(
 }
 
 export function C4Container<T extends Container>({
-  softwareSystem: system,
+  softwareSystem,
   tags,
 }: C4ContainerParams) {
   return (container: T) => {
     globalC4ModelBuilder.addContainer(container.name, {
-      softwareSystem: system,
+      softwareSystem,
       tags,
     });
     return container;
@@ -45,9 +45,10 @@ export function C4Container<T extends Container>({
 
 export function C4Component<T extends Component>({
   container,
+  tags,
 }: C4ComponentParams) {
   return (component: T) => {
-    globalC4ModelBuilder.addComponent(component.name, { container });
+    globalC4ModelBuilder.addComponent(component.name, { container, tags });
     return component;
   };
 }

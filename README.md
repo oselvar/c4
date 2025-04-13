@@ -1,5 +1,26 @@
 # @oselvar/c4
 
+Oselvar C4 Pulse is a system that generates C4 diagrams and other software architecture diagrams automatically.
+
+It uses several advanced mechanisms to collect information about your systems, how they are composed and how they interact.
+
+The diagrams and model behind them is updated continuously throughout your SDLC.
+Data is collected at various stages:
+
+- Manual (beginner) - import mermaid, plantuml or other
+- Production (advanced) - wrappers, telemetry, decorators/annotations/attributes
+- Test (expert) - scenarios, dynamic diagrams, sequence diagrams
+
+We provide a gradual guide to guide programmers and sysadmins and "devops engineers"
+that guides them through every stage. They can adopt Pulse gradually and get incremental value.
+
+The architecture of Pulse is a functional core written in TypeScript. This provides two benefits:
+
+- We can tree-shake the code to reduce bundle sizes
+- It makes it easy to provide a plugin API at every stage of the transformation
+
+The structure of a software system is maintained in a graph database...
+
 Generate C4 models from TypeScript source code:
 
 - Context / Container / Component diagrams based on decorators:

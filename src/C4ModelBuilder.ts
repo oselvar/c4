@@ -3,7 +3,7 @@ import { closest } from "fastest-levenshtein";
 import { C4Dependency, C4Model, C4Object } from "./C4Model";
 
 export type C4ObjectParams = {
-  group?: string;
+  parentId?: string;
   tags?: readonly string[];
 };
 
@@ -12,25 +12,25 @@ export type C4GroupParams = C4ObjectParams;
 export type C4PersonParams = C4ObjectParams;
 
 export type C4ContainerParams = C4ObjectParams & {
-  softwareSystem: string;
+  softwareSystem?: string;
 };
 
 export type C4ComponentParams = C4ObjectParams & {
-  container: string;
+  container?: string;
 };
 
 // Builder classes for constructing the C4 model
 export class C4ModelBuilder {
-  private readonly objectByName = new Map<string, C4Object>();
+  private readonly objectById = new Map<string, C4Object>();
   private readonly dependencyByKey = new Map<string, C4Dependency>();
 
   constructor(c4Model: C4Model = { objects: [], dependencies: [] }) {
-    this.objectByName = new Map(
-      c4Model.objects.map((object) => [object.name, object]),
+    this.objectById = new Map(
+      c4Model.objects.map((object) => [object.id, object]),
     );
     for (const dependency of c4Model.dependencies) {
-      this.getObject(dependency.callerName);
-      this.getObject(dependency.calleeName);
+      this.getObject(dependency.callerId);
+      this.getObject(dependency.calleeId);
     }
     this.dependencyByKey = new Map(
       c4Model.dependencies.map((dependency) => [
@@ -47,12 +47,12 @@ export class C4ModelBuilder {
    */
   addPerson(name: string, params?: C4PersonParams): string {
     const type = "person";
-    this.objectByName.set(name, {
+    this.objectById.set(name, {
       type,
       name: this.objectName(name),
-      variableName: makeVariableName(type, name),
+      id: makeVariableName(type, name),
       tags: params?.tags || [],
-      parentName: params?.group || null,
+      parentId: params?.parentId || null,
     });
     return name;
   }
@@ -62,12 +62,12 @@ export class C4ModelBuilder {
    */
   addGroup(name: string, params?: C4GroupParams): string {
     const type = "group";
-    this.objectByName.set(name, {
+    this.objectById.set(name, {
       type,
       name: this.objectName(name),
-      variableName: makeVariableName(type, name),
+      id: makeVariableName(type, name),
       tags: params?.tags || [],
-      parentName: params?.group || null,
+      parentId: params?.parentId || null,
     });
     return name;
   }
@@ -77,12 +77,12 @@ export class C4ModelBuilder {
    */
   addSoftwareSystem(name: string, params?: C4SoftwareSystemParams): string {
     const type = "softwareSystem";
-    this.objectByName.set(name, {
+    this.objectById.set(name, {
       type,
       name: this.objectName(name),
-      variableName: makeVariableName(type, name),
+      id: makeVariableName(type, name),
       tags: params?.tags || [],
-      parentName: params?.group || null,
+      parentId: params?.parentId || null,
     });
     return name;
   }
@@ -92,24 +92,40 @@ export class C4ModelBuilder {
    */
   addContainer(name: string, params: C4ContainerParams): string {
     const type = "container";
-    this.objectByName.set(name, {
+    let parentId = params.parentId;
+    if (!parentId && params.softwareSystem) {
+      parentId = objectId("softwareSystem", params.softwareSystem);
+    }
+    if (!parentId) {
+      throw new Error(
+        `C4Container: parentId or softwareSystem must be provided`,
+      );
+    }
+    this.objectById.set(name, {
       type,
       name: this.objectName(name),
-      variableName: makeVariableName(type, name),
+      id: makeVariableName(type, name),
       tags: params?.tags || [],
-      parentName: params.softwareSystem || params.group || null,
+      parentId,
     });
     return name;
   }
 
   addComponent(name: string, params: C4ComponentParams): string {
     const type = "component";
-    this.objectByName.set(name, {
+    let parentId = params.parentId;
+    if (!parentId && params.container) {
+      parentId = objectId("container", params.container);
+    }
+    if (!parentId) {
+      throw new Error(`C4Component: parentId or container must be provided`);
+    }
+    this.objectById.set(name, {
       type,
       name: this.objectName(name),
-      variableName: makeVariableName(type, name),
+      id: makeVariableName(type, name),
       tags: params?.tags || [],
-      parentName: params.container || params.group || null,
+      parentId,
     });
     return name;
   }
@@ -126,28 +142,28 @@ export class C4ModelBuilder {
     const callee = this.getObject(calleeName);
 
     const dependency: C4Dependency = {
-      callerName: caller.name,
-      calleeName: callee.name,
+      callerId: caller.id,
+      calleeId: callee.id,
       name: dependencyName,
     };
     this.dependencyByKey.set(dependencyKey(dependency), dependency);
   }
 
   hasObject(name: string): boolean {
-    return this.objectByName.has(name);
+    return this.objectById.has(name);
   }
 
   /**
    * Get an object by name.
    */
-  getObject(name: string): C4Object {
-    const c4Object = this.objectByName.get(name);
+  getObject(id: string): C4Object {
+    const c4Object = this.objectById.get(id);
     if (!c4Object) {
-      const c4Objects = Array.from(this.objectByName.keys());
-      const maybe = closest(name, c4Objects);
+      const c4Objects = Array.from(this.objectById.keys());
+      const maybe = closest(id, c4Objects);
       const didYouMean = maybe ? `\nDid you mean "${maybe}"?` : "";
       throw new Error(
-        `C4 object "${name}" not found.${didYouMean}\nMake sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
+        `C4 object "${id}" not found.${didYouMean}\nMake sure this object is registered in the C4Model. Registered objects:\n${JSON.stringify(
           c4Objects,
           null,
           2,
@@ -160,7 +176,7 @@ export class C4ModelBuilder {
 
   dependencies(c4Object: C4Object): readonly C4Dependency[] {
     return Array.from(this.dependencyByKey.values()).filter(
-      (dependency) => dependency.callerName === c4Object.name,
+      (dependency) => dependency.callerId === c4Object.id,
     );
   }
 
@@ -192,20 +208,26 @@ export class C4ModelBuilder {
     );
     const nestedDependencies = this.nestedDependencies(c4Object);
     const result = nestedDependencies.filter(
-      (dependency) => !nestedChildNames.has(dependency.calleeName),
+      (dependency) => !nestedChildNames.has(dependency.calleeId),
     );
     return result;
   }
 
   children(c4Object: C4Object): readonly C4Object[] {
-    return Array.from(this.objectByName.values()).filter(
-      (object) => object.parentName === c4Object.name,
+    return Array.from(this.objectById.values()).filter(
+      (object) => object.parentId === c4Object.name,
     );
   }
 
+  isChildOf(c4Object: C4Object, parentId: string): boolean {
+    if (c4Object.parentId === parentId) return true;
+    if (c4Object.parentId === null) return false;
+    return this.isChildOf(this.getObject(c4Object.parentId), parentId);
+  }
+
   rootObjects(): readonly C4Object[] {
-    return Array.from(this.objectByName.values()).filter(
-      (object) => object.parentName === null,
+    return Array.from(this.objectById.values()).filter(
+      (object) => object.parentId === null,
     );
   }
 
@@ -214,8 +236,8 @@ export class C4ModelBuilder {
    */
   build(): C4Model {
     return {
-      objects: Array.from(this.objectByName.values()).sort((a, b) =>
-        objectKey(a).localeCompare(objectKey(b)),
+      objects: Array.from(this.objectById.values()).sort((a, b) =>
+        objectToId(a).localeCompare(objectToId(b)),
       ),
       dependencies: Array.from(this.dependencyByKey.values()).sort((a, b) =>
         dependencyKey(a).localeCompare(dependencyKey(b)),
@@ -225,11 +247,15 @@ export class C4ModelBuilder {
 }
 
 function dependencyKey(dependency: C4Dependency) {
-  return `${dependency.callerName}-${dependency.calleeName}-${dependency.name}`;
+  return `${dependency.callerId}-${dependency.calleeId}-${dependency.name}`;
 }
 
-function objectKey(object: C4Object) {
-  return `${object.type}${camelCase(object.name)}`;
+function objectToId(object: C4Object) {
+  return objectId(object.type, object.name);
+}
+
+function objectId(type: string, name: string) {
+  return `${type}${camelCase(name)}`;
 }
 
 function makeVariableName(type: string, words: string) {

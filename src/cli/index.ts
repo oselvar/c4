@@ -50,7 +50,7 @@ program
           break;
         }
       }
-    }
+    },
   );
 
 program.parse(process.argv);

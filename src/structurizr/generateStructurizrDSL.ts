@@ -9,7 +9,7 @@ export function generateStructurizrDSL(model: C4Model): string {
   s += "\n\n";
   model.objects.forEach((object) => {
     builder.dependencies(object).forEach((dependency) => {
-      s += `    ${object.variableName} -> ${builder.getObject(dependency.calleeName).variableName} "${dependency.name}"\n`;
+      s += `    ${object.id} -> ${builder.getObject(dependency.calleeId).id} "${dependency.name}"\n`;
     });
   });
 
@@ -35,7 +35,7 @@ function recursiveWalk(
   const s = "  ".repeat(indent);
   return objects
     .map((object) => {
-      const line = `${s}${object.variableName} = ${object.type} "${object.name}" {`;
+      const line = `${s}${object.id} = ${object.type} "${object.name}" {`;
       const tags = object.tags.map((tag) => `${s}  tags "${tag}"`).join("\n");
       const children = recursiveWalk(
         builder.children(object),
