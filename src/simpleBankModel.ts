@@ -3,25 +3,11 @@ import { C4Model } from "./C4Model";
 export const simpleBankModel: C4Model = {
   objects: [
     {
-      type: "component",
-      name: "SecurityComponent",
-      id: "componentSecurityComponent",
+      type: "softwareSystem",
+      name: "Bank",
+      id: "softwareSystemBank",
       tags: [],
-      parentId: "containerAPIApplication",
-    },
-    {
-      type: "component",
-      name: "SignInController",
-      id: "componentSignInController",
-      tags: [],
-      parentId: "containerAPIApplication",
-    },
-    {
-      type: "container",
-      name: "APIApplication",
-      id: "containerAPIApplication",
-      tags: [],
-      parentId: "softwareSystemBank",
+      parentId: null,
     },
     {
       type: "container",
@@ -38,11 +24,25 @@ export const simpleBankModel: C4Model = {
       parentId: "softwareSystemBank",
     },
     {
-      type: "softwareSystem",
-      name: "Bank",
-      id: "softwareSystemBank",
+      type: "container",
+      name: "APIApplication",
+      id: "containerAPIApplication",
       tags: [],
-      parentId: null,
+      parentId: "softwareSystemBank",
+    },
+    {
+      type: "component",
+      name: "SecurityComponent",
+      id: "componentSecurityComponent",
+      tags: [],
+      parentId: "containerAPIApplication",
+    },
+    {
+      type: "component",
+      name: "SignInController",
+      id: "componentSignInController",
+      tags: [],
+      parentId: "containerAPIApplication",
     },
   ],
   dependencies: [

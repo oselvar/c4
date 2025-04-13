@@ -1,6 +1,6 @@
 import { closest } from "fastest-levenshtein";
 
-import { C4Dependency, C4Model, C4Object } from "./C4Model";
+import { C4Dependency, C4Model, C4Object, C4ObjectType } from "./C4Model";
 
 export type C4ObjectParams = {
   parentId?: string;
@@ -28,6 +28,14 @@ export class C4ModelBuilder {
     this.objectById = new Map(
       c4Model.objects.map((object) => [object.id, object]),
     );
+    // Ensure parentId is valid
+    for (const object of c4Model.objects) {
+      if (object.parentId) {
+        this.getObject(object.parentId);
+      }
+    }
+
+    // Ensure dependencies are valid
     for (const dependency of c4Model.dependencies) {
       this.getObject(dependency.callerId);
       this.getObject(dependency.calleeId);
@@ -156,7 +164,7 @@ export class C4ModelBuilder {
   /**
    * Get an object by name.
    */
-  getObject(id: string): C4Object {
+  getObject(id: string, type?: C4ObjectType): C4Object {
     const c4Object = this.objectById.get(id);
     if (!c4Object) {
       const c4Objects = Array.from(this.objectById.keys());
@@ -170,14 +178,16 @@ export class C4ModelBuilder {
         )}`,
       );
     }
-
+    if (type && c4Object.type !== type) {
+      throw new Error(`C4 object "${id}" is a ${c4Object.type}, not a ${type}`);
+    }
     return c4Object;
   }
 
   dependencies(c4Object: C4Object): readonly C4Dependency[] {
-    return Array.from(this.dependencyByKey.values()).filter(
-      (dependency) => dependency.callerId === c4Object.id,
-    );
+    return Array.from(this.dependencyByKey.values())
+      .filter((dependency) => dependency.callerId === c4Object.id)
+      .toSorted((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)));
   }
 
   /**
@@ -191,14 +201,6 @@ export class C4ModelBuilder {
     return [...dependencies, ...childDependencies];
   }
 
-  nestedChildren(c4Object: C4Object): readonly C4Object[] {
-    const directChildren = this.children(c4Object);
-    return [
-      ...directChildren,
-      ...directChildren.flatMap((child) => this.nestedChildren(child)),
-    ];
-  }
-
   /**
    * Returns all nested dependencies that are not inside the object
    */
@@ -207,16 +209,23 @@ export class C4ModelBuilder {
       this.nestedChildren(c4Object).map((c) => c.name),
     );
     const nestedDependencies = this.nestedDependencies(c4Object);
-    const result = nestedDependencies.filter(
-      (dependency) => !nestedChildNames.has(dependency.calleeId),
-    );
-    return result;
+    return nestedDependencies
+      .filter((dependency) => !nestedChildNames.has(dependency.calleeId))
+      .toSorted((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)));
   }
 
   children(c4Object: C4Object): readonly C4Object[] {
-    return Array.from(this.objectById.values()).filter(
-      (object) => object.parentId === c4Object.name,
-    );
+    return Array.from(this.objectById.values())
+      .filter((object) => object.parentId === c4Object.id)
+      .toSorted((a, b) => a.id.localeCompare(b.id));
+  }
+
+  nestedChildren(c4Object: C4Object): readonly C4Object[] {
+    const directChildren = this.children(c4Object);
+    return [
+      ...directChildren,
+      ...directChildren.flatMap((child) => this.nestedChildren(child)),
+    ];
   }
 
   isChildOf(c4Object: C4Object, parentId: string): boolean {
@@ -226,9 +235,9 @@ export class C4ModelBuilder {
   }
 
   rootObjects(): readonly C4Object[] {
-    return Array.from(this.objectById.values()).filter(
-      (object) => object.parentId === null,
-    );
+    return Array.from(this.objectById.values())
+      .filter((object) => object.parentId === null)
+      .toSorted((a, b) => a.id.localeCompare(b.id));
   }
 
   /**

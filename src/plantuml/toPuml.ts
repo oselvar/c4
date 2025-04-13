@@ -1,5 +1,5 @@
-import { C4Diagram } from "../C4Diagram";
+import { C4View } from "../C4View";
 
-export function toPuml(diagram: C4Diagram): string {
+export function toPuml(diagram: C4View): string {
   throw new Error("Not implemented");
 }

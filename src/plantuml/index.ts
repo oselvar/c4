@@ -1,17 +1,33 @@
-import { C4DiagramType } from "../C4Diagram";
 import { C4Model } from "../C4Model";
-import { toDiagram } from "../toDiagram";
+import { C4ViewType } from "../C4View";
+import {
+  toComponentView,
+  toContainerView,
+  toSystemContextView,
+} from "../toView";
 import { toPuml } from "./toPuml";
 
 export function generateC4PlantUml(
   model: C4Model,
-  diagramType: C4DiagramType,
+  viewType: C4ViewType,
   objectName: string,
   mermaid: boolean = true,
 ): string {
-  const diagram = toDiagram(model, diagramType, objectName);
+  let diagram;
+  switch (viewType) {
+    case "System Context":
+      diagram = toSystemContextView(model, objectName);
+      break;
+    case "Container":
+      diagram = toContainerView(model, objectName);
+      break;
+    case "Component":
+      diagram = toComponentView(model, objectName);
+      break;
+    default:
+      throw new Error(`Unknown view type: ${viewType}`);
+  }
   const puml = toPuml(diagram);
-
   if (!mermaid) {
     return puml;
   }
@@ -20,7 +36,7 @@ export function generateC4PlantUml(
     "System Context": "C4Container",
     Container: "C4Container",
     Component: "C4Component",
-  }[diagramType];
+  }[viewType];
 
   return gfmMermaid(`${header}\n\n${puml}`);
 }
