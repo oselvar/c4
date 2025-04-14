@@ -6,6 +6,7 @@ import { basename, extname } from "node:path";
 import debug from "debug";
 import ErrorStackParser from "error-stack-parser";
 
+import { C4Name } from "./C4Model";
 import {
   type C4ComponentParams,
   type C4ContainerParams,
@@ -25,7 +26,9 @@ export function C4SoftwareSystem<T extends SoftwareSystem>(
   params?: C4SoftwareSystemParams,
 ) {
   return (system: T) => {
-    globalC4ModelBuilder.addSoftwareSystem(system.name, { tags: params?.tags });
+    globalC4ModelBuilder.addSoftwareSystem(system.name as C4Name, {
+      tags: params?.tags,
+    });
     return system;
   };
 }
@@ -35,7 +38,7 @@ export function C4Container<T extends Container>({
   tags,
 }: C4ContainerParams) {
   return (container: T) => {
-    globalC4ModelBuilder.addContainer(container.name, {
+    globalC4ModelBuilder.addContainer(container.name as C4Name, {
       softwareSystem,
       tags,
     });
@@ -48,7 +51,10 @@ export function C4Component<T extends Component>({
   tags,
 }: C4ComponentParams) {
   return (component: T) => {
-    globalC4ModelBuilder.addComponent(component.name, { container, tags });
+    globalC4ModelBuilder.addComponent(component.name as C4Name, {
+      container,
+      tags,
+    });
     return component;
   };
 }
@@ -78,7 +84,7 @@ export function C4Operation(): MethodDecorator {
 
 function c4OperationWrapper(method: Function) {
   function wrapper(this: Function, ...args: unknown[]) {
-    const calleeName = this.constructor.name;
+    const calleeName = this.constructor.name as C4Name;
 
     const stack = ErrorStackParser.parse(new Error());
     const callerClassNameCandidates = stack
@@ -117,14 +123,16 @@ function c4OperationWrapper(method: Function) {
   return wrapper;
 }
 
-function toClassNames(frame: ErrorStackParser.StackFrame): readonly string[] {
-  const classNames: string[] = [];
+function toClassNames(frame: ErrorStackParser.StackFrame): readonly C4Name[] {
+  const classNames: C4Name[] = [];
   const functioNameParts = frame.functionName?.split(".") || [];
   if (functioNameParts.length === 2) {
-    classNames.push(functioNameParts[0]);
+    classNames.push(functioNameParts[0] as C4Name);
   }
   if (frame.fileName) {
-    classNames.push(basename(frame.fileName, extname(frame.fileName)));
+    classNames.push(
+      basename(frame.fileName, extname(frame.fileName)) as C4Name,
+    );
   }
   return classNames;
 }

@@ -1,7 +1,7 @@
-import { DefaultC4ModelBuilder } from "./DefaultC4ModelBuilder";
+import { C4ModelBuilder } from "./C4ModelBuilder";
 
 if (!globalThis.__C4_MODEL_BUILDER__) {
-  globalThis.__C4_MODEL_BUILDER__ = new DefaultC4ModelBuilder({
+  globalThis.__C4_MODEL_BUILDER__ = new C4ModelBuilder({
     objects: [],
     dependencies: [],
   });

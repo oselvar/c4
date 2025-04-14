@@ -5,7 +5,7 @@ import {
   C4SoftwareSystem,
 } from "../decorators";
 
-@C4SoftwareSystem({ parentId: "Big Bank plc" })
+@C4SoftwareSystem()
 export class Bank {}
 
 @C4Container({ softwareSystem: "Bank" })

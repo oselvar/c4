@@ -1,6 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { match } from "path-to-regexp";
 
+import { C4Name } from "../C4Model";
 import { C4ComponentParams, C4ModelBuilder } from "../C4ModelBuilder";
 
 export type HttpMethod =
@@ -27,7 +28,7 @@ export function addOpenApiComponents(
       if (!operation.operationId) {
         continue;
       }
-      builder.addComponent(operation.operationId, { container });
+      builder.addComponent(operation.operationId as C4Name, { container });
     }
   }
 }
@@ -64,7 +65,11 @@ export function addOpenapiDependency(
     if (matched) {
       const calleeName = pathItemObject.operationId;
       const dependencyName = `${httpMethod.toUpperCase()} ${pattern}`;
-      builder.addDependency(callerName, calleeName, dependencyName);
+      builder.addDependency(
+        callerName as C4Name,
+        calleeName as C4Name,
+        dependencyName,
+      );
     }
   }
 }

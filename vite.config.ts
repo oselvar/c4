@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 
-// import { generateStructurizrDSL } from "./src/structurizr/generateStructurizrDSL";
+import { toStructurizr } from "./src/generators/toStructurizr";
 import { C4ModelWriter } from "./src/vitest/C4ModelWriter";
 
 export default defineConfig({
@@ -10,11 +10,16 @@ export default defineConfig({
     setupFiles: [C4ModelWriter.setupFile],
     reporters: [
       "default",
-      new C4ModelWriter(),
-      // (c4Model) => ({
-      //   file: "src/examples/workspace/workspace.dsl",
-      //   content: generateStructurizrDSL(c4Model),
-      // }),
+      new C4ModelWriter(
+        (c4Model) => ({
+          file: "src/examples/workspace/workspace.dsl",
+          content: toStructurizr(c4Model),
+        }),
+        (c4Model) => ({
+          file: "src/examples/workspace/workspace.json",
+          content: JSON.stringify(c4Model, null, 2),
+        })
+      ),
       // (c4Model) => ({
       //   file: "src/examples/system-context-bank.md",
       //   content: generateC4PlantUml(c4Model, "System Context", "Bank"),

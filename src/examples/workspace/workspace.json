@@ -1,0 +1,60 @@
+{
+  "objects": [
+    {
+      "type": "component",
+      "name": "SecurityComponent",
+      "id": "componentSecurityComponent",
+      "tags": [],
+      "parentName": "APIApplication"
+    },
+    {
+      "type": "component",
+      "name": "SignInController",
+      "id": "componentSignInController",
+      "tags": [],
+      "parentName": "APIApplication"
+    },
+    {
+      "type": "container",
+      "name": "APIApplication",
+      "id": "containerAPIApplication",
+      "tags": [],
+      "parentName": "Bank"
+    },
+    {
+      "type": "container",
+      "name": "Database",
+      "id": "containerDatabase",
+      "tags": [
+        "database"
+      ],
+      "parentName": "Bank"
+    },
+    {
+      "type": "container",
+      "name": "SinglePageApplication",
+      "id": "containerSinglePageApplication",
+      "tags": [],
+      "parentName": "Bank"
+    },
+    {
+      "type": "softwareSystem",
+      "name": "Bank",
+      "id": "softwareSystemBank",
+      "tags": [],
+      "parentName": null
+    }
+  ],
+  "dependencies": [
+    {
+      "callerName": "SecurityComponent",
+      "calleeName": "Database",
+      "label": "readCredentials"
+    },
+    {
+      "callerName": "SignInController",
+      "calleeName": "SecurityComponent",
+      "label": "checkCredentials"
+    }
+  ]
+}

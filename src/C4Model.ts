@@ -7,18 +7,21 @@ export type C4ObjectType =
   | "component";
 
 export type C4Dependency = Readonly<{
-  callerId: string;
-  calleeId: string;
-  name: string;
+  callerName: C4Name;
+  calleeName: C4Name;
+  label: string;
 }>;
 
+export type C4Name = string & { __brand: "name" };
+export type C4Id = string & { __brand: "id" };
+
 export type C4Object = Readonly<{
-  id: string; // Unique identifier for the object. This is typically a "variable name" in order to make e.g. Structurizr diagrams more readable.
+  id: C4Id; // Unique identifier for the object. This is typically a "variable name" in order to make e.g. Structurizr diagrams more readable.
   type: C4ObjectType;
-  name: string;
+  name: C4Name;
   // TODO: Add description
   tags: readonly string[];
-  parentId: string | null;
+  parentName: C4Name | null;
 }>;
 
 export type C4Model = Readonly<{
