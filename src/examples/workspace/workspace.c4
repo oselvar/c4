@@ -1,0 +1,23 @@
+model {
+  softwareSystemBank = softwareSystem "Bank" {
+    containerAPIApplication = container "APIApplication" {
+      componentSecurityComponent = component "SecurityComponent" {
+      }
+      componentSignInController = component "SignInController" {
+      }
+    }
+    containerDatabase = container "Database" {
+    }
+    containerSinglePageApplication = container "SinglePageApplication" {
+    }
+  }
+
+  componentSecurityComponent -> containerDatabase "readCredentials"
+  componentSignInController -> componentSecurityComponent "checkCredentials"
+}
+
+views {
+  view Bank of softwareSystemBank {
+    include *
+  }
+}

@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 
-import { toStructurizr } from "./src/generators/toStructurizr";
+import { toLikeC4, toStructurizr } from "./src/generators/toDsl";
 import { C4ModelWriter } from "./src/vitest/C4ModelWriter";
 
 export default defineConfig({
@@ -16,9 +16,13 @@ export default defineConfig({
           content: toStructurizr(c4Model),
         }),
         (c4Model) => ({
+          file: "src/examples/workspace/workspace.c4",
+          content: toLikeC4(c4Model),
+        }),
+        (c4Model) => ({
           file: "src/examples/workspace/workspace.json",
           content: JSON.stringify(c4Model, null, 2),
-        })
+        }),
       ),
       // (c4Model) => ({
       //   file: "src/examples/system-context-bank.md",
