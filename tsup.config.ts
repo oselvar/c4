@@ -7,8 +7,6 @@ export default defineConfig({
     "src/hono/index.ts",
     "src/workflows/index.ts",
     "src/workflows/cloudflare/index.ts",
-    "src/structurizr/index.ts",
-    "src/plantuml/index.ts",
     "src/openapi/index.ts",
     "src/vitest/index.ts",
     "src/vitest/setup.ts",
