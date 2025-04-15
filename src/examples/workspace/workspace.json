@@ -25,7 +25,9 @@
       "type": "container",
       "name": "Database",
       "id": "containerDatabase",
-      "tags": ["database"],
+      "tags": [
+        "database"
+      ],
       "parentName": "Bank"
     },
     {
