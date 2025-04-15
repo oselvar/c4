@@ -1,5 +1,6 @@
-import { C4Dependency, C4Model, C4Object } from "../C4Model";
+import { C4Model, C4Object } from "../C4Model";
 import { C4ModelBuilder } from "../C4ModelBuilder";
+import { camelCase } from "../camelCase";
 
 export function toStructurizr(model: C4Model): string {
   const builder = new C4ModelBuilder(model);
@@ -7,7 +8,7 @@ export function toStructurizr(model: C4Model): string {
   let s = `workspace {\n  model {\n`;
   const level = 2;
 
-  s = modelAndRelationships(
+  s = modelAndCalls(
     level,
     s,
     builder,
@@ -18,13 +19,26 @@ export function toStructurizr(model: C4Model): string {
   );
 
   s += `
-    views {
-      styles {
+    views {\n`;
+
+  model.callchains.forEach((callchain) => {
+    s += `      dynamic * {\n`;
+    s += `        title "${callchain.name}" {\n`;
+    callchain.calls.forEach((call) => {
+      const caller = builder.getObject(call.callerName);
+      const callee = builder.getObject(call.calleeName);
+      s += `          ${caller.id} -> ${callee.id} "${call.operationName}"\n`;
+    });
+    s += `        }\n`;
+    s += `      }\n`;
+  });
+  s += `      styles {
         element "Database" {
           shape cylinder
         }
       }
-    }
+`;
+  s += `    }
 `;
 
   s += `  }\n}\n`;
@@ -36,7 +50,7 @@ export function toLikeC4(model: C4Model): string {
 
   let s = `model {\n`;
   const level = 1;
-  s = modelAndRelationships(level, s, builder, model, () => "");
+  s = modelAndCalls(level, s, builder, model, () => "");
   s += `}\n\nviews {
 `;
 
@@ -51,26 +65,34 @@ export function toLikeC4(model: C4Model): string {
       s += `  }\n`;
     });
 
+  model.callchains.forEach((callchain) => {
+    s += `  dynamic view ${camelCase(callchain.name)} {\n`;
+    s += `    title "${callchain.name}"\n`;
+    callchain.calls.forEach((call) => {
+      const caller = builder.getObject(call.callerName);
+      const callee = builder.getObject(call.calleeName);
+      s += `    ${caller.id} -> ${callee.id} "${call.operationName}"\n`;
+    });
+    s += `  }\n`;
+  });
+
   s += `}\n`;
   return s;
 }
 
-function modelAndRelationships(
+function modelAndCalls(
   level: number,
   s: string,
   builder: C4ModelBuilder,
-  model: Readonly<{
-    objects: readonly C4Object[];
-    dependencies: readonly C4Dependency[];
-  }>,
+  model: C4Model,
   renderTags: RenderTags,
 ) {
   const indent = "  ".repeat(level);
   s += recursiveWalk(builder.rootObjects(), builder, level, renderTags);
   s += "\n\n";
   model.objects.forEach((object) => {
-    builder.dependencies(object).forEach((dependency) => {
-      s += `${indent}${object.id} -> ${builder.getObject(dependency.calleeName).id} "${dependency.label}"\n`;
+    builder.calls(object).forEach((dependency) => {
+      s += `${indent}${object.id} -> ${builder.getObject(dependency.calleeName).id} "${dependency.operationName}"\n`;
     });
   });
   return s;

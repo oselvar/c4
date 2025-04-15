@@ -18,6 +18,12 @@ workspace {
     componentSignInController -> componentSecurityComponent "checkCredentials"
 
     views {
+      dynamic * {
+        title "keeps or money safe" {
+          componentSignInController -> componentSecurityComponent "checkCredentials"
+          componentSecurityComponent -> containerDatabase "readCredentials"
+        }
+      }
       styles {
         element "Database" {
           shape cylinder

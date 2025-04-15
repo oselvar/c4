@@ -29,4 +29,9 @@ views {
   view Bank of softwareSystemBank {
     include *
   }
+  dynamic view keepsOrMoneySafe {
+    title "keeps or money safe"
+    componentSignInController -> componentSecurityComponent "checkCredentials"
+    componentSecurityComponent -> containerDatabase "readCredentials"
+  }
 }

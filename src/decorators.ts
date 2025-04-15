@@ -12,7 +12,7 @@ import {
   type C4ContainerParams,
   type C4SoftwareSystemParams,
 } from "./C4ModelBuilder";
-import { globalC4ModelBuilder } from "./globalC4ModelBuilder";
+import { globalC4ModelBuilder } from "./globals";
 
 type Constructor<T = object> = new (...args: any[]) => T;
 
@@ -110,12 +110,8 @@ function c4OperationWrapper(method: Function) {
     }
 
     if (callerName) {
-      const dependencyName = method.name;
-      globalC4ModelBuilder.addDependency(
-        callerName,
-        calleeName,
-        dependencyName,
-      );
+      const operationName = method.name;
+      globalC4ModelBuilder.addCall(callerName, calleeName, operationName);
     }
 
     return method.apply(this, args);

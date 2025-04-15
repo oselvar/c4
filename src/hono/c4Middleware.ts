@@ -3,11 +3,7 @@ import type { OpenAPIV3 } from "openapi-types";
 
 import { C4Name } from "../C4Model";
 import { C4ModelBuilder } from "../C4ModelBuilder";
-import {
-  addOpenApiComponents,
-  addOpenapiDependency,
-  HttpMethod,
-} from "../openapi";
+import { addOpenapiCall, addOpenApiComponents, HttpMethod } from "../openapi";
 
 /**
  * This middleware adds OpenAPI components and dependencies to the C4 model.
@@ -27,7 +23,7 @@ export function c4Middleware(
     const httpMethod = c.req.method;
     const path = c.req.path;
     if (callerName) {
-      addOpenapiDependency(
+      addOpenapiCall(
         builder,
         openapi,
         callerName,

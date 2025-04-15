@@ -1,5 +1,17 @@
 import { C4Id, C4Model, C4Name } from "./C4Model";
 
+const calls = [
+  {
+    callerName: "componentSecurityComponent" as C4Name,
+    calleeName: "containerDatabase" as C4Name,
+    operationName: "readCredentials",
+  },
+  {
+    callerName: "componentSignInController" as C4Name,
+    calleeName: "componentSecurityComponent" as C4Name,
+    operationName: "checkCredentials",
+  },
+];
 export const simpleBankModel: C4Model = {
   objects: [
     {
@@ -45,16 +57,11 @@ export const simpleBankModel: C4Model = {
       parentName: "containerAPIApplication" as C4Name,
     },
   ],
-  dependencies: [
+  calls: calls,
+  callchains: [
     {
-      callerName: "componentSecurityComponent" as C4Name,
-      calleeName: "containerDatabase" as C4Name,
-      label: "readCredentials",
-    },
-    {
-      callerName: "componentSignInController" as C4Name,
-      calleeName: "componentSecurityComponent" as C4Name,
-      label: "checkCredentials",
+      name: "SignIn",
+      calls: calls,
     },
   ],
 };

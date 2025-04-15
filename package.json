@@ -64,7 +64,10 @@
     "fix": "tsc && prettier --write . && eslint --fix .",
     "build": "tsup",
     "prepublishOnly": "npm run build",
-    "upgrade": "npm-check-updates --upgrade --deep"
+    "upgrade": "npm-check-updates --upgrade --deep",
+    "generate:png": "npx likec4 export png src/examples/workspace",
+    "generate:d2": "npx likec4 codegen d2 src/examples/workspace",
+    "generate": "npm run generate:png && npm run generate:d2 && make"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.8",

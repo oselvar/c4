@@ -6,10 +6,15 @@ export type C4ObjectType =
   | "container"
   | "component";
 
-export type C4Dependency = Readonly<{
+export type C4Call = Readonly<{
   callerName: C4Name;
   calleeName: C4Name;
-  label: string;
+  operationName: string;
+}>;
+
+export type C4Callchain = Readonly<{
+  name: string;
+  calls: C4Call[];
 }>;
 
 export type C4Name = string & { __brand: "name" };
@@ -26,5 +31,6 @@ export type C4Object = Readonly<{
 
 export type C4Model = Readonly<{
   objects: readonly C4Object[];
-  dependencies: readonly C4Dependency[];
+  calls: readonly C4Call[];
+  callchains: readonly C4Callchain[];
 }>;

@@ -33,7 +33,7 @@ export function addOpenApiComponents(
   }
 }
 
-export function addOpenapiDependency(
+export function addOpenapiCall(
   builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
   callerName: string,
@@ -65,7 +65,7 @@ export function addOpenapiDependency(
     if (matched) {
       const calleeName = pathItemObject.operationId;
       const dependencyName = `${httpMethod.toUpperCase()} ${pattern}`;
-      builder.addDependency(
+      builder.addCall(
         callerName as C4Name,
         calleeName as C4Name,
         dependencyName,

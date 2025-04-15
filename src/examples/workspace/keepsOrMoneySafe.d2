@@ -1,0 +1,14 @@
+direction: right
+
+SoftwareSystemBankContainerAPIApplicationComponentSignInController: {
+  label: "SignInController"
+}
+SoftwareSystemBankContainerAPIApplicationComponentSecurityComponent: {
+  label: "SecurityComponent"
+}
+SoftwareSystemBankContainerDatabase: {
+  label: "Database"
+}
+
+SoftwareSystemBankContainerAPIApplicationComponentSignInController -> SoftwareSystemBankContainerAPIApplicationComponentSecurityComponent: "checkCredentials"
+SoftwareSystemBankContainerAPIApplicationComponentSecurityComponent -> SoftwareSystemBankContainerDatabase: "readCredentials"

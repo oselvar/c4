@@ -1,13 +1,15 @@
 import { closest } from "fastest-levenshtein";
 
 import {
-  C4Dependency,
+  C4Call,
+  C4Callchain,
   C4Id,
   C4Model,
   C4Name,
   C4Object,
   C4ObjectType,
 } from "./C4Model";
+import { camelCase } from "./camelCase";
 
 export type C4ObjectParams = {
   tags?: readonly string[];
@@ -31,9 +33,11 @@ export type C4ComponentParams = C4ObjectParams & {
 
 export class C4ModelBuilder implements C4ModelBuilder {
   private readonly objectByName = new Map<C4Name, C4Object>();
-  private readonly dependencyByKey = new Map<string, C4Dependency>();
+  private readonly callByKey = new Map<string, C4Call>();
+  private readonly callchains: C4Callchain[];
+  private callchain: C4Callchain | null = null;
 
-  constructor(c4Model: C4Model = { objects: [], dependencies: [] }) {
+  constructor(c4Model: C4Model = { objects: [], calls: [], callchains: [] }) {
     this.objectByName = new Map(
       c4Model.objects.map((object) => [object.name, object]),
     );
@@ -45,16 +49,14 @@ export class C4ModelBuilder implements C4ModelBuilder {
     }
 
     // Ensure dependencies are valid
-    for (const dependency of c4Model.dependencies) {
-      this.getObject(dependency.callerName);
-      this.getObject(dependency.calleeName);
+    for (const call of c4Model.calls) {
+      this.getObject(call.callerName);
+      this.getObject(call.calleeName);
     }
-    this.dependencyByKey = new Map(
-      c4Model.dependencies.map((dependency) => [
-        dependencyKey(dependency),
-        dependency,
-      ]),
+    this.callByKey = new Map(
+      c4Model.calls.map((call) => [dependencyKey(call), call]),
     );
+    this.callchains = [...c4Model.callchains];
   }
 
   /**
@@ -129,23 +131,32 @@ export class C4ModelBuilder implements C4ModelBuilder {
     return name;
   }
 
+  startCallchain(name: string) {
+    const callchain: C4Callchain = {
+      name,
+      calls: [],
+    };
+    this.callchains.push(callchain);
+    this.callchain = callchain;
+  }
+
   /**
    * Add a dependency between two objects.
    */
-  addDependency(
-    callerName: C4Name,
-    calleeName: C4Name,
-    dependencyName: string,
-  ) {
+  addCall(callerName: C4Name, calleeName: C4Name, operationName: string) {
     const caller = this.getObject(callerName);
     const callee = this.getObject(calleeName);
 
-    const dependency: C4Dependency = {
+    const call: C4Call = {
       callerName: caller.name,
       calleeName: callee.name,
-      label: dependencyName,
+      operationName,
     };
-    this.dependencyByKey.set(dependencyKey(dependency), dependency);
+    this.callByKey.set(dependencyKey(call), call);
+    if (!this.callchain) {
+      throw new Error("Callchain not started");
+    }
+    this.callchain.calls.push(call);
   }
 
   hasObject(name: C4Name): boolean {
@@ -177,33 +188,9 @@ export class C4ModelBuilder implements C4ModelBuilder {
     return c4Object;
   }
 
-  dependencies(c4Object: C4Object): readonly C4Dependency[] {
-    return Array.from(this.dependencyByKey.values())
+  calls(c4Object: C4Object): readonly C4Call[] {
+    return Array.from(this.callByKey.values())
       .filter((dependency) => dependency.callerName === c4Object.name)
-      .toSorted((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)));
-  }
-
-  /**
-   * Returns all dependencies by the object and its children
-   */
-  nestedDependencies(c4Object: C4Object): readonly C4Dependency[] {
-    const dependencies = this.dependencies(c4Object);
-    const childDependencies = this.nestedChildren(c4Object).flatMap((child) =>
-      this.dependencies(child),
-    );
-    return [...dependencies, ...childDependencies];
-  }
-
-  /**
-   * Returns all nested dependencies that are not inside the object
-   */
-  nestedOutsideDependencies(c4Object: C4Object): readonly C4Dependency[] {
-    const nestedChildNames = new Set(
-      this.nestedChildren(c4Object).map((c) => c.name),
-    );
-    const nestedDependencies = this.nestedDependencies(c4Object);
-    return nestedDependencies
-      .filter((dependency) => !nestedChildNames.has(dependency.calleeName))
       .toSorted((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)));
   }
 
@@ -241,15 +228,18 @@ export class C4ModelBuilder implements C4ModelBuilder {
       objects: Array.from(this.objectByName.values()).sort((a, b) =>
         objectToId(a).localeCompare(objectToId(b)),
       ),
-      dependencies: Array.from(this.dependencyByKey.values()).sort((a, b) =>
+      calls: Array.from(this.callByKey.values()).sort((a, b) =>
         dependencyKey(a).localeCompare(dependencyKey(b)),
+      ),
+      callchains: this.callchains.filter(
+        (callchain) => callchain.calls.length > 0,
       ),
     };
   }
 }
 
-function dependencyKey(dependency: C4Dependency) {
-  return `${dependency.callerName}-${dependency.calleeName}-${dependency.label}`;
+function dependencyKey(dependency: C4Call) {
+  return `${dependency.callerName}-${dependency.calleeName}-${dependency.operationName}`;
 }
 
 function objectToId(object: C4Object) {
@@ -258,17 +248,4 @@ function objectToId(object: C4Object) {
 
 function objectId(type: string, name: string): C4Id {
   return camelCase(`${type} ${name}`) as C4Id;
-  // return `${type}${camelCase(name)}` as C4Id;
-}
-
-// function makeId(type: string, words: string): C4Id {
-//   return camelCase(`${type} ${words}`) as C4Id;
-// }
-
-function camelCase(words: string) {
-  const upperCamelCase = words.replace(/(?:^|[\s-_])(\w)/g, (_, char) =>
-    char.toUpperCase(),
-  );
-  // Lowercase the first letter
-  return upperCamelCase.replace(/^[A-Z]/, (char) => char.toLowerCase());
 }

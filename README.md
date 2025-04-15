@@ -47,9 +47,10 @@ The Structurird `.dsl` file can be rendered with `structurizr-lite`, but that's 
 (requires a docker setup or jvm). Instead we use LikeC4:
 
     npx likec4 start src/examples/workspace
-    npx likec4 export png src/examples/workspace
-    npx likec4 codegen d2 src/examples/workspace
-    make
+
+You can generate static diagrams with:
+
+    npm run generate
 
 ### Workflow diagram
 
