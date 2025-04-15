@@ -16,5 +16,5 @@
     "types": ["node"],
     "lib": ["ESNext", "DOM"]
   },
-  "include": ["src/**/*.ts", "src/plantuml/generateC4PlantUml.tsXXX"]
+  "include": ["src/**/*.ts"]
 }
