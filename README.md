@@ -36,6 +36,21 @@ The examples below are generated from examples in this repo.
 
 ### Context / Containers / Components diagrams
 
+First, run the tests:
+
+    npm test
+
+This will write files to `src/examples/workspace/workspace.{dsl,c4}`.
+
+These are [Structurizr](https://structurizr.com/) and [LikeC4](https://likec4.dev) sources.
+The Structurird `.dsl` file can be rendered with `structurizr-lite`, but that's a bit cumberome
+(requires a docker setup or jvm). Instead we use LikeC4:
+
+    npx likec4 start src/examples/workspace
+    npx likec4 export png src/examples/workspace
+    npx likec4 codegen d2 src/examples/workspace
+    make
+
 ### Workflow diagram
 
 Generated with:

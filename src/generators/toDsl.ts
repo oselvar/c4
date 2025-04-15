@@ -41,7 +41,10 @@ export function toLikeC4(model: C4Model): string {
 `;
 
   model.objects
-    .filter((object) => object.type === "softwareSystem")
+    .filter(
+      (object) =>
+        object.type === "softwareSystem" || object.type === "container",
+    )
     .forEach((object) => {
       s += `  view ${object.name} of ${object.id} {\n`;
       s += `    include *\n`;

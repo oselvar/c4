@@ -17,6 +17,15 @@ model {
 }
 
 views {
+  view APIApplication of containerAPIApplication {
+    include *
+  }
+  view Database of containerDatabase {
+    include *
+  }
+  view SinglePageApplication of containerSinglePageApplication {
+    include *
+  }
   view Bank of softwareSystemBank {
     include *
   }

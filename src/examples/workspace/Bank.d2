@@ -1,0 +1,17 @@
+direction: down
+
+SoftwareSystemBank: {
+  label: "Bank"
+
+  ContainerAPIApplication: {
+    label: "APIApplication"
+  }
+  ContainerDatabase: {
+    label: "Database"
+  }
+  ContainerSinglePageApplication: {
+    label: "SinglePageApplication"
+  }
+}
+
+SoftwareSystemBank.ContainerAPIApplication -> SoftwareSystemBank.ContainerDatabase: "readCredentials"
