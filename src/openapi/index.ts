@@ -2,7 +2,7 @@ import type { OpenAPIV3 } from "openapi-types";
 import { match } from "path-to-regexp";
 
 import { C4Name } from "../C4Model";
-import { C4ComponentParams, C4ModelBuilder } from "../C4ModelBuilder";
+import { C4ModelBuilder } from "../C4ModelBuilder";
 
 export type HttpMethod =
   | "get"
@@ -17,7 +17,7 @@ export type HttpMethod =
 export function addOpenApiComponents(
   builder: C4ModelBuilder,
   openapi: OpenAPIV3.Document,
-  { container }: C4ComponentParams,
+  container: C4Name,
 ) {
   for (const path in openapi.paths) {
     const method = openapi.paths[path];

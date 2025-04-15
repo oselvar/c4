@@ -1,1 +1,1 @@
-export * from "./c4OpenApiHonoMiddleware";
+export * from "./c4Middleware";

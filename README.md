@@ -124,7 +124,7 @@ system.
 
 ### OpenAPI
 
-Register OpenAPI specs with the `registerOpenApiComponents` method.
+Register OpenAPI specs with the `addOpenApiComponents` method.
 
 Add a Middleware to record calls.
 

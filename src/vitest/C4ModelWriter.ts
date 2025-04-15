@@ -29,6 +29,10 @@ export class C4ModelWriter implements Reporter {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.c4Model = testCase.meta().c4Model;
+    if (!this.c4Model) {
+      console.warn("⛔️ No C4 model found in test case meta:", testCase.meta());
+      return;
+    }
   }
 
   async onTestRunEnd() {
