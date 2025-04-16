@@ -1,7 +1,7 @@
 import { afterEach, beforeEach } from "vitest";
 
-import { C4Model } from "../C4Model";
-import { globalC4ModelBuilder } from "../globals";
+import { C4Model } from "../core/C4Model";
+import { globalC4ModelBuilder } from "../core/globals";
 
 type Meta = {
   c4Model: C4Model;

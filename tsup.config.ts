@@ -3,7 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: [
     "src/cli/index.ts",
-    "src/index.ts",
+    "src/core/index.ts",
     "src/generators/index.ts",
     "src/hono/index.ts",
     "src/workflows/index.ts",

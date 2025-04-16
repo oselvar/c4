@@ -4,7 +4,7 @@ import { extname, join } from "node:path";
 // import { TestCase } from "vitest/node";
 import { Reporter } from "vitest/reporters";
 
-import { C4Model } from "../C4Model";
+import { C4Model } from "../core/C4Model";
 
 export type C4Output = {
   file: string;

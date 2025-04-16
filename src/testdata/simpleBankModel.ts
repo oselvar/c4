@@ -1,4 +1,4 @@
-import { C4Id, C4Model, C4Name } from "./C4Model";
+import { C4Id, C4Model, C4Name } from "../core/C4Model";
 
 const calls = [
   {

@@ -3,7 +3,7 @@ import {
   C4Container,
   C4Operation,
   C4SoftwareSystem,
-} from "../decorators";
+} from "../core/decorators";
 
 @C4SoftwareSystem()
 export class Bank {}
