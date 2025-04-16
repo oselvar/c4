@@ -1,5 +1,6 @@
 import { C4Model, C4Object } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
+import { getUniqueCalls } from "../core/getUniqueCalls";
 import { camelCase, objectKey } from "../core/strings";
 
 export function toStructurizr(model: C4Model): string {
@@ -91,7 +92,7 @@ function modelAndCalls(
   s += recursiveWalk(builder.rootObjects(), builder, level, renderTags);
   s += "\n\n";
   Object.values(model.objects).forEach((object: C4Object) => {
-    Object.values(model.calls)
+    Object.values(getUniqueCalls(model.callchains))
       .filter((call) => call.callerName === object.name)
       .forEach((call) => {
         s += `${indent}${objectKey(object)} -> ${objectKey(builder.getObject(call.calleeName))} "${call.operationName}"\n`;

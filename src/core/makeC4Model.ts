@@ -6,7 +6,6 @@ export function makeC4Model(
 ): C4Model {
   return {
     objects: Object.fromEntries(objects.map((object) => [object.name, object])),
-    calls: Object.fromEntries(callchains.map((callchain) => callchain.calls)),
     callchains,
   };
 }

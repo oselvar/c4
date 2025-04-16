@@ -3,13 +3,13 @@ import { closest } from "fastest-levenshtein";
 import {
   C4Call,
   C4Callchain,
-  C4CallKey,
   C4Model,
   C4Name,
   C4Object,
   C4ObjectKey,
   C4ObjectType,
 } from "./C4Model";
+import { getUniqueCalls } from "./getUniqueCalls";
 import { callKey, objectKey } from "./strings";
 
 export type C4ObjectParams = {
@@ -34,11 +34,10 @@ export type C4ComponentParams = C4ObjectParams & {
 
 export class C4ModelBuilder implements C4ModelBuilder {
   private readonly objectByName = new Map<C4Name, C4Object>();
-  private readonly callByKey = new Map<string, C4Call>();
   private readonly callchains: C4Callchain[];
   private callchain: C4Callchain | null = null;
 
-  constructor(c4Model: C4Model = { objects: {}, calls: {}, callchains: [] }) {
+  constructor(c4Model: C4Model = { objects: {}, callchains: [] }) {
     this.objectByName = new Map(
       Object.entries(c4Model.objects).map(([, object]) => [
         object.name,
@@ -53,13 +52,10 @@ export class C4ModelBuilder implements C4ModelBuilder {
     }
 
     // Ensure dependencies are valid
-    for (const call of Object.values(c4Model.calls)) {
+    for (const call of getUniqueCalls(c4Model.callchains)) {
       this.getObject(call.callerName);
       this.getObject(call.calleeName);
     }
-    this.callByKey = new Map(
-      Object.entries(c4Model.calls).map(([key, call]) => [key, call]),
-    );
     this.callchains = [...c4Model.callchains];
   }
 
@@ -151,7 +147,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
       calleeName: callee.name,
       operationName,
     };
-    this.callByKey.set(callKey(call), call);
     if (!this.callchain) {
       throw new Error("Callchain not started");
     }
@@ -188,7 +183,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
   }
 
   calls(c4Object: C4Object): readonly C4Call[] {
-    return Array.from(this.callByKey.values())
+    return getUniqueCalls(this.callchains)
       .filter((dependency) => dependency.callerName === c4Object.name)
       .toSorted((a, b) => callKey(a).localeCompare(callKey(b)));
   }
@@ -226,12 +221,8 @@ export class C4ModelBuilder implements C4ModelBuilder {
     const objects: Record<C4ObjectKey, C4Object> = Object.fromEntries(
       this.objectByName.entries(),
     );
-    const calls: Record<C4CallKey, C4Call> = Object.fromEntries(
-      this.callByKey.entries(),
-    );
     return {
       objects,
-      calls,
       callchains: this.callchains.filter(
         (callchain) => callchain.calls.length > 0,
       ),
