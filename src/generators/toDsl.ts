@@ -1,6 +1,6 @@
 import { C4Model, C4Object } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
-import { camelCase } from "../core/strings";
+import { camelCase, objectKey } from "../core/strings";
 
 export function toStructurizr(model: C4Model): string {
   const builder = new C4ModelBuilder(model);
@@ -27,7 +27,7 @@ export function toStructurizr(model: C4Model): string {
     callchain.calls.forEach((call) => {
       const caller = builder.getObject(call.callerName);
       const callee = builder.getObject(call.calleeName);
-      s += `          ${caller.id} -> ${callee.id} "${call.operationName}"\n`;
+      s += `          ${objectKey(caller)} -> ${objectKey(callee)} "${call.operationName}"\n`;
     });
     s += `        }\n`;
     s += `      }\n`;
@@ -60,7 +60,7 @@ export function toLikeC4(model: C4Model): string {
         object.type === "softwareSystem" || object.type === "container",
     )
     .forEach((object) => {
-      s += `  view ${object.name} of ${object.id} {\n`;
+      s += `  view ${object.name} of ${objectKey(object)} {\n`;
       s += `    include *\n`;
       s += `  }\n`;
     });
@@ -71,7 +71,7 @@ export function toLikeC4(model: C4Model): string {
     callchain.calls.forEach((call) => {
       const caller = builder.getObject(call.callerName);
       const callee = builder.getObject(call.calleeName);
-      s += `    ${caller.id} -> ${callee.id} "${call.operationName}"\n`;
+      s += `    ${objectKey(caller)} -> ${objectKey(callee)} "${call.operationName}"\n`;
     });
     s += `  }\n`;
   });
@@ -94,7 +94,7 @@ function modelAndCalls(
     Object.values(model.calls)
       .filter((call) => call.callerName === object.name)
       .forEach((call) => {
-        s += `${indent}${object.id} -> ${builder.getObject(call.calleeName).id} "${call.operationName}"\n`;
+        s += `${indent}${objectKey(object)} -> ${objectKey(builder.getObject(call.calleeName))} "${call.operationName}"\n`;
       });
   });
   return s;
@@ -111,7 +111,7 @@ function recursiveWalk(
   const indent = "  ".repeat(level);
   return objects
     .map((object) => {
-      const line = `${indent}${object.id} = ${object.type} "${object.name}" {`;
+      const line = `${indent}${objectKey(object)} = ${object.type} "${object.name}" {`;
       const tags = renderTags(object, indent);
       const children = recursiveWalk(
         builder.children(object),

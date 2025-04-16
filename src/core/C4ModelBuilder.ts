@@ -10,7 +10,7 @@ import {
   C4ObjectKey,
   C4ObjectType,
 } from "./C4Model";
-import { callKey, makeObjectKey } from "./strings";
+import { callKey, objectKey } from "./strings";
 
 export type C4ObjectParams = {
   tags?: readonly string[];
@@ -71,7 +71,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params?.parentName as C4Name | null,
     });
@@ -86,7 +85,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
@@ -101,7 +99,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
@@ -116,7 +113,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params.softwareSystem as C4Name,
     });
@@ -128,7 +124,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params.container as C4Name,
     });
@@ -201,7 +196,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
   children(c4Object: C4Object): readonly C4Object[] {
     return Array.from(this.objectByName.values())
       .filter((object) => object.parentName === c4Object.name)
-      .toSorted((a, b) => a.id.localeCompare(b.id));
+      .toSorted((a, b) => objectKey(a).localeCompare(objectKey(b)));
   }
 
   nestedChildren(c4Object: C4Object): readonly C4Object[] {
@@ -221,7 +216,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
   rootObjects(): readonly C4Object[] {
     return Array.from(this.objectByName.values())
       .filter((object) => object.parentName === null)
-      .toSorted((a, b) => a.id.localeCompare(b.id));
+      .toSorted((a, b) => objectKey(a).localeCompare(objectKey(b)));
   }
 
   /**
