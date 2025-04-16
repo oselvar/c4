@@ -6,7 +6,7 @@ import { basename, extname } from "node:path";
 import debug from "debug";
 import ErrorStackParser from "error-stack-parser";
 
-import { C4Name } from "./C4Model";
+import type { C4Name } from "./C4Model";
 import {
   type C4ComponentParams,
   type C4ContainerParams,

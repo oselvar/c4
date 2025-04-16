@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { match } from "path-to-regexp";
 
-import { C4Name } from "../core/C4Model";
+import type { C4Name } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
 
 export type HttpMethod =

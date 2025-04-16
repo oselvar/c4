@@ -1,4 +1,4 @@
-import { C4Name } from "../core/C4Model";
+import type { C4Name } from "../core/C4Model";
 import { makeC4Model } from "../core/makeC4Model";
 
 export const simpleBankModel = makeC4Model(

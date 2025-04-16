@@ -1,4 +1,4 @@
-import { C4Call, C4Callchain } from "./C4Model";
+import type { C4Call, C4Callchain } from "./C4Model";
 import { callKey } from "./strings";
 
 export function getUniqueCalls(

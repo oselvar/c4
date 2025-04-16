@@ -1,6 +1,6 @@
 import { closest } from "fastest-levenshtein";
 
-import {
+import type {
   C4Call,
   C4Callchain,
   C4Model,

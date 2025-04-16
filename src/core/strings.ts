@@ -1,4 +1,4 @@
-import { C4Call, C4CallKey, C4Object, C4ObjectKey } from "./C4Model";
+import type { C4Call, C4CallKey, C4Object, C4ObjectKey } from "./C4Model";
 
 export function callKey(call: C4Call): C4CallKey {
   return `${call.callerName}-${call.calleeName}-${call.operationName}` as C4CallKey;

@@ -1,4 +1,4 @@
-import { C4Model, C4Object } from "../core/C4Model";
+import type { C4Model, C4Object } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
 import { getUniqueCalls } from "../core/getUniqueCalls";
 import { camelCase, objectKey } from "../core/strings";

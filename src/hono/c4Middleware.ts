@@ -1,9 +1,13 @@
 import { createMiddleware } from "hono/factory";
 import type { OpenAPIV3 } from "openapi-types";
 
-import { C4Name } from "../core/C4Model";
+import type { C4Name } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
-import { addOpenapiCall, addOpenApiComponents, HttpMethod } from "../openapi";
+import {
+  addOpenapiCall,
+  addOpenApiComponents,
+  type HttpMethod,
+} from "../openapi";
 
 /**
  * This middleware adds OpenAPI components and dependencies to the C4 model.
