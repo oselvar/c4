@@ -54,7 +54,7 @@ export function toLikeC4(model: C4Model): string {
   s += `}\n\nviews {
 `;
 
-  model.objects
+  Object.values(model.objects)
     .filter(
       (object) =>
         object.type === "softwareSystem" || object.type === "container",
@@ -90,10 +90,12 @@ function modelAndCalls(
   const indent = "  ".repeat(level);
   s += recursiveWalk(builder.rootObjects(), builder, level, renderTags);
   s += "\n\n";
-  model.objects.forEach((object) => {
-    builder.calls(object).forEach((dependency) => {
-      s += `${indent}${object.id} -> ${builder.getObject(dependency.calleeName).id} "${dependency.operationName}"\n`;
-    });
+  Object.values(model.objects).forEach((object: C4Object) => {
+    Object.values(model.calls)
+      .filter((call) => call.callerName === object.name)
+      .forEach((call) => {
+        s += `${indent}${object.id} -> ${builder.getObject(call.calleeName).id} "${call.operationName}"\n`;
+      });
   });
   return s;
 }

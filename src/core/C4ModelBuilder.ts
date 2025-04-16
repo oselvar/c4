@@ -37,24 +37,27 @@ export class C4ModelBuilder implements C4ModelBuilder {
   private readonly callchains: C4Callchain[];
   private callchain: C4Callchain | null = null;
 
-  constructor(c4Model: C4Model = { objects: [], calls: [], callchains: [] }) {
+  constructor(c4Model: C4Model = { objects: {}, calls: {}, callchains: [] }) {
     this.objectByName = new Map(
-      c4Model.objects.map((object) => [object.name, object]),
+      Object.entries(c4Model.objects).map(([, object]) => [
+        object.name,
+        object,
+      ]),
     );
     // Ensure parentId is valid
-    for (const object of c4Model.objects) {
+    for (const object of Object.values(c4Model.objects)) {
       if (object.parentName) {
         this.getObject(object.parentName);
       }
     }
 
     // Ensure dependencies are valid
-    for (const call of c4Model.calls) {
+    for (const call of Object.values(c4Model.calls)) {
       this.getObject(call.callerName);
       this.getObject(call.calleeName);
     }
     this.callByKey = new Map(
-      c4Model.calls.map((call) => [dependencyKey(call), call]),
+      Object.entries(c4Model.calls).map(([key, call]) => [key, call]),
     );
     this.callchains = [...c4Model.callchains];
   }
@@ -224,13 +227,24 @@ export class C4ModelBuilder implements C4ModelBuilder {
    * Build the final C4 model
    */
   build(): C4Model {
+    const objects: Record<string, C4Object> = {};
+    const calls: Record<string, C4Call> = {};
+
+    Array.from(this.objectByName.values())
+      .sort((a, b) => objectToId(a).localeCompare(objectToId(b)))
+      .forEach((object) => {
+        objects[object.id] = object;
+      });
+
+    Array.from(this.callByKey.values())
+      .sort((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)))
+      .forEach((call) => {
+        calls[dependencyKey(call)] = call;
+      });
+
     return {
-      objects: Array.from(this.objectByName.values()).sort((a, b) =>
-        objectToId(a).localeCompare(objectToId(b)),
-      ),
-      calls: Array.from(this.callByKey.values()).sort((a, b) =>
-        dependencyKey(a).localeCompare(dependencyKey(b)),
-      ),
+      objects,
+      calls,
       callchains: this.callchains.filter(
         (callchain) => callchain.calls.length > 0,
       ),

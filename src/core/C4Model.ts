@@ -30,7 +30,7 @@ export type C4Object = Readonly<{
 }>;
 
 export type C4Model = Readonly<{
-  objects: readonly C4Object[];
-  calls: readonly C4Call[];
+  objects: Record<string, C4Object>;
+  calls: Record<string, C4Call>;
   callchains: readonly C4Callchain[];
 }>;
