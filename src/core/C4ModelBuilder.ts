@@ -3,13 +3,14 @@ import { closest } from "fastest-levenshtein";
 import {
   C4Call,
   C4Callchain,
-  C4Id,
+  C4CallKey,
   C4Model,
   C4Name,
   C4Object,
+  C4ObjectKey,
   C4ObjectType,
 } from "./C4Model";
-import { camelCase } from "./camelCase";
+import { callKey, makeObjectKey } from "./strings";
 
 export type C4ObjectParams = {
   tags?: readonly string[];
@@ -70,7 +71,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: objectId(type, name),
+      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params?.parentName as C4Name | null,
     });
@@ -85,7 +86,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: objectId(type, name),
+      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
@@ -100,7 +101,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: objectId(type, name),
+      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
@@ -115,7 +116,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: objectId(type, name),
+      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params.softwareSystem as C4Name,
     });
@@ -127,7 +128,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.objectByName.set(name, {
       type,
       name,
-      id: objectId(type, name),
+      id: makeObjectKey(type, name),
       tags: params?.tags || [],
       parentName: params.container as C4Name,
     });
@@ -155,7 +156,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
       calleeName: callee.name,
       operationName,
     };
-    this.callByKey.set(dependencyKey(call), call);
+    this.callByKey.set(callKey(call), call);
     if (!this.callchain) {
       throw new Error("Callchain not started");
     }
@@ -194,7 +195,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
   calls(c4Object: C4Object): readonly C4Call[] {
     return Array.from(this.callByKey.values())
       .filter((dependency) => dependency.callerName === c4Object.name)
-      .toSorted((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)));
+      .toSorted((a, b) => callKey(a).localeCompare(callKey(b)));
   }
 
   children(c4Object: C4Object): readonly C4Object[] {
@@ -227,21 +228,12 @@ export class C4ModelBuilder implements C4ModelBuilder {
    * Build the final C4 model
    */
   build(): C4Model {
-    const objects: Record<string, C4Object> = {};
-    const calls: Record<string, C4Call> = {};
-
-    Array.from(this.objectByName.values())
-      .sort((a, b) => objectToId(a).localeCompare(objectToId(b)))
-      .forEach((object) => {
-        objects[object.id] = object;
-      });
-
-    Array.from(this.callByKey.values())
-      .sort((a, b) => dependencyKey(a).localeCompare(dependencyKey(b)))
-      .forEach((call) => {
-        calls[dependencyKey(call)] = call;
-      });
-
+    const objects: Record<C4ObjectKey, C4Object> = Object.fromEntries(
+      this.objectByName.entries(),
+    );
+    const calls: Record<C4CallKey, C4Call> = Object.fromEntries(
+      this.callByKey.entries(),
+    );
     return {
       objects,
       calls,
@@ -250,16 +242,4 @@ export class C4ModelBuilder implements C4ModelBuilder {
       ),
     };
   }
-}
-
-function dependencyKey(dependency: C4Call) {
-  return `${dependency.callerName}-${dependency.calleeName}-${dependency.operationName}`;
-}
-
-function objectToId(object: C4Object) {
-  return objectId(object.type, object.name);
-}
-
-function objectId(type: string, name: string): C4Id {
-  return camelCase(`${type} ${name}`) as C4Id;
 }

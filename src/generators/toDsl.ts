@@ -1,6 +1,6 @@
 import { C4Model, C4Object } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
-import { camelCase } from "../core/camelCase";
+import { camelCase } from "../core/strings";
 
 export function toStructurizr(model: C4Model): string {
   const builder = new C4ModelBuilder(model);

@@ -12,21 +12,21 @@ model {
     }
   }
 
-  componentSecurityComponent -> containerDatabase "readCredentials"
   componentSignInController -> componentSecurityComponent "checkCredentials"
+  componentSecurityComponent -> containerDatabase "readCredentials"
 }
 
 views {
-  view APIApplication of containerAPIApplication {
-    include *
-  }
-  view Database of containerDatabase {
+  view Bank of softwareSystemBank {
     include *
   }
   view SinglePageApplication of containerSinglePageApplication {
     include *
   }
-  view Bank of softwareSystemBank {
+  view APIApplication of containerAPIApplication {
+    include *
+  }
+  view Database of containerDatabase {
     include *
   }
   dynamic view keepsOrMoneySafe {

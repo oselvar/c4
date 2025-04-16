@@ -14,8 +14,8 @@ workspace {
       }
     }
 
-    componentSecurityComponent -> containerDatabase "readCredentials"
     componentSignInController -> componentSecurityComponent "checkCredentials"
+    componentSecurityComponent -> containerDatabase "readCredentials"
 
     views {
       dynamic * {

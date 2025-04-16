@@ -18,10 +18,10 @@ export type C4Callchain = Readonly<{
 }>;
 
 export type C4Name = string & { __brand: "name" };
-export type C4Id = string & { __brand: "id" };
-
+export type C4ObjectKey = string & { __brand: "object_key" };
+export type C4CallKey = string & { __brand: "call_key" };
 export type C4Object = Readonly<{
-  id: C4Id; // Unique identifier for the object. This is typically a "variable name" in order to make e.g. Structurizr diagrams more readable.
+  id: C4ObjectKey; // Unique identifier for the object. This is typically a "variable name" in order to make e.g. Structurizr diagrams more readable.
   type: C4ObjectType;
   name: C4Name;
   // TODO: Add description
@@ -30,7 +30,7 @@ export type C4Object = Readonly<{
 }>;
 
 export type C4Model = Readonly<{
-  objects: Record<string, C4Object>;
-  calls: Record<string, C4Call>;
+  objects: Record<C4ObjectKey, C4Object>;
+  calls: Record<C4CallKey, C4Call>;
   callchains: readonly C4Callchain[];
 }>;
