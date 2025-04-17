@@ -8,7 +8,8 @@ type Meta = {
 };
 
 beforeEach((test) => {
-  globalC4ModelBuilder.startCallchain(test.task.name);
+  const callchainName = test.task.name || "Unnamed Test";
+  globalC4ModelBuilder.startCallchain(callchainName);
 });
 
 afterEach((test) => {
