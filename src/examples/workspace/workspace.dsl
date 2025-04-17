@@ -1,27 +1,27 @@
 workspace {
   model {
-    softwareSystemBank = softwareSystem "Bank" {
-      containerAPIApplication = container "APIApplication" {
-        componentSecurityComponent = component "SecurityComponent" {
+    softwaresystemBank = softwareSystem "Bank" {
+      containerApiapplication = container "APIApplication" {
+        componentSecuritycomponent = component "SecurityComponent" {
         }
-        componentSignInController = component "SignInController" {
+        componentSignincontroller = component "SignInController" {
         }
       }
       containerDatabase = container "Database" {
         tags "database"
       }
-      containerSinglePageApplication = container "SinglePageApplication" {
+      containerSinglepageapplication = container "SinglePageApplication" {
       }
     }
 
-    componentSignInController -> componentSecurityComponent "checkCredentials"
-    componentSecurityComponent -> containerDatabase "readCredentials"
+    componentSignincontroller -> componentSecuritycomponent "checkCredentials"
+    componentSecuritycomponent -> containerDatabase "readCredentials"
 
     views {
       dynamic * {
         title "keeps or money safe" {
-          componentSignInController -> componentSecurityComponent "checkCredentials"
-          componentSecurityComponent -> containerDatabase "readCredentials"
+          componentSignincontroller -> componentSecuritycomponent "checkCredentials"
+          componentSecuritycomponent -> containerDatabase "readCredentials"
         }
       }
       styles {

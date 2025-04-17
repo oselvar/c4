@@ -16,7 +16,7 @@ export function toStructurizr(model: C4Model): string {
     model,
     (object: C4Object, indent: string) => {
       return object.tags.map((tag) => `${indent}  tags "${tag}"`).join("\n");
-    }
+    },
   );
 
   s += `
@@ -64,7 +64,7 @@ export function toLikeC4(model: C4Model): string {
   Object.values(model.objects)
     .filter(
       (object) =>
-        object.type === "softwareSystem" || object.type === "container"
+        object.type === "softwareSystem" || object.type === "container",
     )
     .forEach((object) => {
       s += `  view ${object.name} of ${objectKey(object)} {\n`;
@@ -98,7 +98,7 @@ function modelAndCalls(
   s: string,
   builder: C4ModelBuilder,
   model: C4Model,
-  renderTags: RenderTags
+  renderTags: RenderTags,
 ) {
   const indent = "  ".repeat(level);
   s += recursiveWalk(builder.rootObjects(), builder, level, renderTags);
@@ -119,7 +119,7 @@ function recursiveWalk(
   objects: readonly C4Object[],
   builder: C4ModelBuilder,
   level: number,
-  renderTags: RenderTags
+  renderTags: RenderTags,
 ): string {
   const indent = "  ".repeat(level);
   return objects
@@ -130,7 +130,7 @@ function recursiveWalk(
         builder.children(object),
         builder,
         level + 1,
-        renderTags
+        renderTags,
       );
       const close = `${indent}}`;
       return [line, tags, children, close].filter(Boolean).join("\n");

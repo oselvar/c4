@@ -12,10 +12,19 @@ export function makeObjectKey(type: string, name: string): C4ObjectKey {
   return camelCase(`${type} ${name}`) as C4ObjectKey;
 }
 
-export function camelCase(words: string) {
-  const upperCamelCase = words.replace(/(?:^|[\s-_])(\w)/g, (_, char) =>
-    char.toUpperCase(),
-  );
-  // Lowercase the first letter
-  return upperCamelCase.replace(/^[A-Z]/, (char) => char.toLowerCase());
+export function camelCase(input: string) {
+  // 1️⃣ Remove all apostrophes (so “world’s” → “worlds”)
+  const noApos = input.replace(/['’]/g, "");
+
+  // 2️⃣ Split on anything that isn’t a letter or digit
+  const segments = noApos.split(/[^A-Za-z0-9]+/).filter(Boolean);
+
+  // 3️⃣ Lower‑case the first segment, capitalize the first letter of each following segment
+  return segments
+    .map((seg, i) => {
+      const lower = seg.toLowerCase();
+      if (i === 0) return lower;
+      return lower[0].toUpperCase() + lower.slice(1);
+    })
+    .join("");
 }
