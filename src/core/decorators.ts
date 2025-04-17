@@ -3,6 +3,7 @@
 
 import { basename, extname } from "node:path";
 
+import { trace } from "@opentelemetry/api";
 import debug from "debug";
 import ErrorStackParser from "error-stack-parser";
 
@@ -13,7 +14,6 @@ import {
   type C4SoftwareSystemParams,
 } from "./C4ModelBuilder";
 import { globalC4ModelBuilder } from "./globals";
-
 type Constructor<T = object> = new (...args: any[]) => T;
 
 type SoftwareSystem = Constructor;
@@ -29,6 +29,18 @@ export function C4SoftwareSystem<T extends SoftwareSystem>(
     globalC4ModelBuilder.addSoftwareSystem(system.name as C4Name, {
       tags: params?.tags,
     });
+
+    console.log("C4SoftwareSystem", system.name);
+
+    const tracer = trace.getTracer("@oselvar/c4/call");
+    tracer
+      .startSpan(system.name, {
+        attributes: {
+          "c4.softwareSystem": system.name,
+        },
+      })
+      .end();
+
     return system;
   };
 }
@@ -109,9 +121,24 @@ function c4OperationWrapper(method: Function) {
       );
     }
 
+    const operationName = method.name;
+
     if (callerName) {
-      const operationName = method.name;
       globalC4ModelBuilder.addCall(callerName, calleeName, operationName);
+    }
+
+    if (callerName) {
+      const tracer = trace.getTracer("@oselvar/c4/call");
+      return tracer.startActiveSpan(operationName, async (span) => {
+        try {
+          span.setAttribute("c4.operation", operationName);
+          span.setAttribute("c4.caller", callerName);
+          span.setAttribute("c4.callee", calleeName);
+          return await method.apply(this, args);
+        } finally {
+          span.end();
+        }
+      });
     }
 
     return method.apply(this, args);

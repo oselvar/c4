@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { simpleBankModel } from "../testdata/simpleBankModel";
+import { simpleBankModel } from "../test/simpleBankModel";
 import { C4ModelBuilder } from "./C4ModelBuilder";
 
 describe("C4ModelBuilder", () => {
