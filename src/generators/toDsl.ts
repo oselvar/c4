@@ -1,7 +1,7 @@
 import type { C4Model, C4Object } from "../core/C4Model";
 import { C4ModelBuilder } from "../core/C4ModelBuilder";
 import { getUniqueCalls } from "../core/getUniqueCalls";
-import { camelCase, objectKey } from "../core/strings";
+import { callKey, camelCase, objectKey } from "../core/strings";
 
 export function toStructurizr(model: C4Model): string {
   const builder = new C4ModelBuilder(model);
@@ -16,7 +16,7 @@ export function toStructurizr(model: C4Model): string {
     model,
     (object: C4Object, indent: string) => {
       return object.tags.map((tag) => `${indent}  tags "${tag}"`).join("\n");
-    },
+    }
   );
 
   s += `
@@ -25,10 +25,16 @@ export function toStructurizr(model: C4Model): string {
   model.callchains.forEach((callchain) => {
     s += `      dynamic * {\n`;
     s += `        title "${callchain.name}" {\n`;
+    let lastCallKey = "";
     callchain.calls.forEach((call) => {
+      if (lastCallKey === callKey(call)) {
+        // Some calls are repeated in the callchain, so we skip them to avoid clutter
+        return;
+      }
       const caller = builder.getObject(call.callerName);
       const callee = builder.getObject(call.calleeName);
       s += `          ${objectKey(caller)} -> ${objectKey(callee)} "${call.operationName}"\n`;
+      lastCallKey = callKey(call);
     });
     s += `        }\n`;
     s += `      }\n`;
@@ -58,7 +64,7 @@ export function toLikeC4(model: C4Model): string {
   Object.values(model.objects)
     .filter(
       (object) =>
-        object.type === "softwareSystem" || object.type === "container",
+        object.type === "softwareSystem" || object.type === "container"
     )
     .forEach((object) => {
       s += `  view ${object.name} of ${objectKey(object)} {\n`;
@@ -69,10 +75,16 @@ export function toLikeC4(model: C4Model): string {
   model.callchains.forEach((callchain) => {
     s += `  dynamic view ${camelCase(callchain.name)} {\n`;
     s += `    title "${callchain.name}"\n`;
+    let lastCallKey = "";
     callchain.calls.forEach((call) => {
+      if (lastCallKey === callKey(call)) {
+        // Some calls are repeated in the callchain, so we skip them to avoid clutter
+        return;
+      }
       const caller = builder.getObject(call.callerName);
       const callee = builder.getObject(call.calleeName);
       s += `    ${objectKey(caller)} -> ${objectKey(callee)} "${call.operationName}"\n`;
+      lastCallKey = callKey(call);
     });
     s += `  }\n`;
   });
@@ -86,7 +98,7 @@ function modelAndCalls(
   s: string,
   builder: C4ModelBuilder,
   model: C4Model,
-  renderTags: RenderTags,
+  renderTags: RenderTags
 ) {
   const indent = "  ".repeat(level);
   s += recursiveWalk(builder.rootObjects(), builder, level, renderTags);
@@ -107,7 +119,7 @@ function recursiveWalk(
   objects: readonly C4Object[],
   builder: C4ModelBuilder,
   level: number,
-  renderTags: RenderTags,
+  renderTags: RenderTags
 ): string {
   const indent = "  ".repeat(level);
   return objects
@@ -118,7 +130,7 @@ function recursiveWalk(
         builder.children(object),
         builder,
         level + 1,
-        renderTags,
+        renderTags
       );
       const close = `${indent}}`;
       return [line, tags, children, close].filter(Boolean).join("\n");
