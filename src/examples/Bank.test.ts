@@ -10,4 +10,12 @@ describe("Bank", () => {
 
     signinController.signIn();
   });
+
+  it("keeps or money safe again", async () => {
+    const database = new Database();
+    const securityComponent = new SecurityComponent(database);
+    const signinController = new SignInController(securityComponent);
+
+    signinController.signIn();
+  });
 });

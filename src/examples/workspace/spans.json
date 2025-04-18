@@ -1,0 +1,580 @@
+[
+  {
+    "resourceSpans": [
+      {
+        "resource": {
+          "attributes": [
+            {
+              "key": "host.name",
+              "value": {
+                "stringValue": "Aslaks-MacBook-Pro-2.local"
+              }
+            },
+            {
+              "key": "host.arch",
+              "value": {
+                "stringValue": "arm64"
+              }
+            },
+            {
+              "key": "host.id",
+              "value": {
+                "stringValue": "A94E0299-E0DD-5BFC-9130-F5C742DF1991"
+              }
+            },
+            {
+              "key": "process.pid",
+              "value": {
+                "intValue": 11857
+              }
+            },
+            {
+              "key": "process.executable.name",
+              "value": {
+                "stringValue": "node (vitest 3)"
+              }
+            },
+            {
+              "key": "process.executable.path",
+              "value": {
+                "stringValue": "/Users/aslakhellesoy/.asdf/installs/nodejs/22.14.0/bin/node"
+              }
+            },
+            {
+              "key": "process.command_args",
+              "value": {
+                "arrayValue": {
+                  "values": [
+                    {
+                      "stringValue": "/Users/aslakhellesoy/.asdf/installs/nodejs/22.14.0/bin/node"
+                    },
+                    {
+                      "stringValue": "--conditions"
+                    },
+                    {
+                      "stringValue": "node"
+                    },
+                    {
+                      "stringValue": "--conditions"
+                    },
+                    {
+                      "stringValue": "development"
+                    },
+                    {
+                      "stringValue": "/Users/aslakhellesoy/git/oselvar/c4/node_modules/tinypool/dist/entry/process.js"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "key": "process.runtime.version",
+              "value": {
+                "stringValue": "22.14.0"
+              }
+            },
+            {
+              "key": "process.runtime.name",
+              "value": {
+                "stringValue": "nodejs"
+              }
+            },
+            {
+              "key": "process.runtime.description",
+              "value": {
+                "stringValue": "Node.js"
+              }
+            },
+            {
+              "key": "process.command",
+              "value": {
+                "stringValue": "/Users/aslakhellesoy/git/oselvar/c4/node_modules/tinypool/dist/entry/process.js"
+              }
+            },
+            {
+              "key": "process.owner",
+              "value": {
+                "stringValue": "aslakhellesoy"
+              }
+            },
+            {
+              "key": "service.name",
+              "value": {
+                "stringValue": "unknown_service:/Users/aslakhellesoy/.asdf/installs/nodejs/22.14.0/bin/node"
+              }
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "value": {
+                "stringValue": "nodejs"
+              }
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "value": {
+                "stringValue": "opentelemetry"
+              }
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "value": {
+                "stringValue": "2.0.0"
+              }
+            }
+          ],
+          "droppedAttributesCount": 0
+        },
+        "scopeSpans": [
+          {
+            "scope": {
+              "name": "@oselvar/c4"
+            },
+            "spans": [
+              {
+                "traceId": "6b5d2119dcad640a14bb1f46270021de",
+                "spanId": "550f6116b2a5a59c",
+                "name": "softwareSystem",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210147500",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "Bank"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": []
+                      }
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "d405821b449ac3becc9b42b8f172c4f2",
+                "spanId": "96740f4b4fe123fd",
+                "name": "container",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210009459",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "SinglePageApplication"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": []
+                      }
+                    }
+                  },
+                  {
+                    "key": "parentName",
+                    "value": {
+                      "stringValue": "Bank"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "8c6161d1428ec9284d41cb073464fe77",
+                "spanId": "3e64aa075ab0b32b",
+                "name": "container",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210060042",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "APIApplication"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": []
+                      }
+                    }
+                  },
+                  {
+                    "key": "parentName",
+                    "value": {
+                      "stringValue": "Bank"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "58a5e848fc6975b397d20266d024cb77",
+                "spanId": "018852f17d3b0091",
+                "name": "component",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210011708",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": []
+                      }
+                    }
+                  },
+                  {
+                    "key": "parentName",
+                    "value": {
+                      "stringValue": "APIApplication"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "a8c2acef7557a03b0e27ada7db8c1741",
+                "spanId": "1f7dc0b1c0006c1e",
+                "name": "component",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210004958",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": []
+                      }
+                    }
+                  },
+                  {
+                    "key": "parentName",
+                    "value": {
+                      "stringValue": "APIApplication"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "efaeef50f48c4658f85af7c6750e90f3",
+                "spanId": "70dc3b4a37565d38",
+                "name": "container",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475210000000",
+                "endTimeUnixNano": "1744974475210011291",
+                "attributes": [
+                  {
+                    "key": "name",
+                    "value": {
+                      "stringValue": "Database"
+                    }
+                  },
+                  {
+                    "key": "tags",
+                    "value": {
+                      "arrayValue": {
+                        "values": [
+                          {
+                            "stringValue": "database"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "key": "parentName",
+                    "value": {
+                      "stringValue": "Bank"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "46661f09c0ec4341bd0b1477ae744da7",
+                "spanId": "eac667f321361acb",
+                "parentSpanId": "e4df9e7326259b5b",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475220000000",
+                "endTimeUnixNano": "1744974475220210750",
+                "attributes": [
+                  {
+                    "key": "c4.operation",
+                    "value": {
+                      "stringValue": "readCredentials"
+                    }
+                  },
+                  {
+                    "key": "c4.caller",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "c4.callee",
+                    "value": {
+                      "stringValue": "Database"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "46661f09c0ec4341bd0b1477ae744da7",
+                "spanId": "e4df9e7326259b5b",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475216000000",
+                "endTimeUnixNano": "1744974475219577167",
+                "attributes": [
+                  {
+                    "key": "c4.operation",
+                    "value": {
+                      "stringValue": "checkCredentials"
+                    }
+                  },
+                  {
+                    "key": "c4.caller",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "c4.callee",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "callerName",
+                        "value": {
+                          "stringValue": "SecurityComponent"
+                        }
+                      },
+                      {
+                        "key": "calleeName",
+                        "value": {
+                          "stringValue": "Database"
+                        }
+                      },
+                      {
+                        "key": "operationName",
+                        "value": {
+                          "stringValue": "readCredentials"
+                        }
+                      }
+                    ],
+                    "name": "call",
+                    "timeUnixNano": "1744974475219184042",
+                    "droppedAttributesCount": 0
+                  }
+                ],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "005e7d2d38638b05b24caf146f0f17ca",
+                "spanId": "2c75e742bac387c7",
+                "name": "callchain:keeps or money safe",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475211000000",
+                "endTimeUnixNano": "1744974475220477375",
+                "attributes": [],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "65fae5d6e877001b98ec7a2ac89f4170",
+                "spanId": "db9df51711a2d205",
+                "parentSpanId": "0ea980cf801914cd",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475221000000",
+                "endTimeUnixNano": "1744974475221013583",
+                "attributes": [
+                  {
+                    "key": "c4.operation",
+                    "value": {
+                      "stringValue": "readCredentials"
+                    }
+                  },
+                  {
+                    "key": "c4.caller",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "c4.callee",
+                    "value": {
+                      "stringValue": "Database"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "65fae5d6e877001b98ec7a2ac89f4170",
+                "spanId": "0ea980cf801914cd",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1744974475221000000",
+                "endTimeUnixNano": "1744974475221159875",
+                "attributes": [
+                  {
+                    "key": "c4.operation",
+                    "value": {
+                      "stringValue": "checkCredentials"
+                    }
+                  },
+                  {
+                    "key": "c4.caller",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "c4.callee",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "callerName",
+                        "value": {
+                          "stringValue": "SecurityComponent"
+                        }
+                      },
+                      {
+                        "key": "calleeName",
+                        "value": {
+                          "stringValue": "Database"
+                        }
+                      },
+                      {
+                        "key": "operationName",
+                        "value": {
+                          "stringValue": "readCredentials"
+                        }
+                      }
+                    ],
+                    "name": "call",
+                    "timeUnixNano": "1744974475221126208",
+                    "droppedAttributesCount": 0
+                  }
+                ],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

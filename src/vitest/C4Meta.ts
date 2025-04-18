@@ -6,5 +6,5 @@ export type C4Span = Pick<ReadableSpan, "name" | "attributes" | "duration">;
 
 export type C4Meta = {
   c4Model: C4Model;
-  spans: C4Span[];
+  serializedSpans: Uint8Array<ArrayBufferLike> | undefined;
 };

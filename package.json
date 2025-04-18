@@ -104,6 +104,7 @@
     "@opentelemetry/core": "2.0.0",
     "@opentelemetry/exporter-metrics-otlp-proto": "0.200.0",
     "@opentelemetry/exporter-trace-otlp-proto": "0.200.0",
+    "@opentelemetry/otlp-transformer": "0.200.0",
     "@opentelemetry/sdk-metrics": "2.0.0",
     "@opentelemetry/sdk-node": "0.200.0",
     "@opentelemetry/sdk-trace-base": "2.0.0",

@@ -5,20 +5,27 @@ import { C4ModelWriter } from "./src/vitest/C4ModelWriter";
 
 export default defineConfig({
   test: {
-    isolate: false,
-    fileParallelism: false,
     setupFiles: [C4ModelWriter.setupFile],
     reporters: [
       "default",
       new C4ModelWriter(
-        (c4Model) => ({
+        ({ model }) => ({
           file: "src/examples/workspace/workspace.dsl",
-          content: toStructurizr(c4Model),
+          content: toStructurizr(model),
         }),
-        (c4Model) => ({
+        ({ model }) => ({
           file: "src/examples/workspace/workspace.c4",
-          content: toLikeC4(c4Model),
+          content: toLikeC4(model),
         }),
+        ({ spans }) => {
+          const spanObjects = spans.map((span) =>
+            JSON.parse(new TextDecoder().decode(span))
+          );
+          return {
+            file: "src/examples/workspace/spans.json",
+            content: JSON.stringify(spanObjects, null, 2),
+          };
+        }
       ),
     ],
 

@@ -1,37 +1,7 @@
 model {
-  softwaresystemBank = softwareSystem "Bank" {
-    containerApiapplication = container "APIApplication" {
-      componentSecuritycomponent = component "SecurityComponent" {
-      }
-      componentSignincontroller = component "SignInController" {
-      }
-    }
-    containerDatabase = container "Database" {
-    }
-    containerSinglepageapplication = container "SinglePageApplication" {
-    }
-  }
 
-  componentSignincontroller -> componentSecuritycomponent "checkCredentials"
-  componentSecuritycomponent -> containerDatabase "readCredentials"
+
 }
 
 views {
-  view Bank of softwaresystemBank {
-    include *
-  }
-  view SinglePageApplication of containerSinglepageapplication {
-    include *
-  }
-  view APIApplication of containerApiapplication {
-    include *
-  }
-  view Database of containerDatabase {
-    include *
-  }
-  dynamic view keepsOrMoneySafe {
-    title "keeps or money safe"
-    componentSignincontroller -> componentSecuritycomponent "checkCredentials"
-    componentSecuritycomponent -> containerDatabase "readCredentials"
-  }
 }
