@@ -24,7 +24,7 @@ export class C4ModelWriter implements Reporter {
   private readonly generators: C4ModelGenerator[];
   static setupFile = join(
     import.meta.dirname,
-    "setup" + extname(import.meta.url)
+    "setup" + extname(import.meta.url),
   );
 
   constructor(...generators: C4ModelGenerator[]) {

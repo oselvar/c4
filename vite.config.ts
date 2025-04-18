@@ -19,13 +19,13 @@ export default defineConfig({
         }),
         ({ spans }) => {
           const spanObjects = spans.map((span) =>
-            JSON.parse(new TextDecoder().decode(span))
+            JSON.parse(new TextDecoder().decode(span)),
           );
           return {
             file: "src/examples/workspace/spans.json",
             content: JSON.stringify(spanObjects, null, 2),
           };
-        }
+        },
       ),
     ],
 

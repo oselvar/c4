@@ -111,9 +111,7 @@ export interface ResourceSpans {
    * The resource for the spans in this message.
    * If this field is not set then no resource info is known.
    */
-  resource:
-    | Resource
-    | undefined;
+  resource: Resource | undefined;
   /** A list of ScopeSpans that originate from a resource. */
   scopeSpans: ScopeSpans[];
   /**
@@ -134,9 +132,7 @@ export interface ScopeSpans {
    * Semantically when InstrumentationScope isn't set, it is equivalent with
    * an empty instrumentation scope name (unknown).
    */
-  scope:
-    | InstrumentationScope
-    | undefined;
+  scope: InstrumentationScope | undefined;
   /** A list of Spans that originate from an instrumentation scope. */
   spans: Span[];
   /**
@@ -515,7 +511,10 @@ function createBaseTracesData(): TracesData {
 }
 
 export const TracesData: MessageFns<TracesData> = {
-  encode(message: TracesData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: TracesData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.resourceSpans) {
       ResourceSpans.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -523,7 +522,8 @@ export const TracesData: MessageFns<TracesData> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): TracesData {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTracesData();
     while (reader.pos < end) {
@@ -534,7 +534,9 @@ export const TracesData: MessageFns<TracesData> = {
             break;
           }
 
-          message.resourceSpans.push(ResourceSpans.decode(reader, reader.uint32()));
+          message.resourceSpans.push(
+            ResourceSpans.decode(reader, reader.uint32()),
+          );
           continue;
         }
       }
@@ -557,7 +559,9 @@ export const TracesData: MessageFns<TracesData> = {
   toJSON(message: TracesData): unknown {
     const obj: any = {};
     if (message.resourceSpans?.length) {
-      obj.resourceSpans = message.resourceSpans.map((e) => ResourceSpans.toJSON(e));
+      obj.resourceSpans = message.resourceSpans.map((e) =>
+        ResourceSpans.toJSON(e),
+      );
     }
     return obj;
   },
@@ -565,9 +569,12 @@ export const TracesData: MessageFns<TracesData> = {
   create<I extends Exact<DeepPartial<TracesData>, I>>(base?: I): TracesData {
     return TracesData.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TracesData>, I>>(object: I): TracesData {
+  fromPartial<I extends Exact<DeepPartial<TracesData>, I>>(
+    object: I,
+  ): TracesData {
     const message = createBaseTracesData();
-    message.resourceSpans = object.resourceSpans?.map((e) => ResourceSpans.fromPartial(e)) || [];
+    message.resourceSpans =
+      object.resourceSpans?.map((e) => ResourceSpans.fromPartial(e)) || [];
     return message;
   },
 };
@@ -577,7 +584,10 @@ function createBaseResourceSpans(): ResourceSpans {
 }
 
 export const ResourceSpans: MessageFns<ResourceSpans> = {
-  encode(message: ResourceSpans, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ResourceSpans,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.resource !== undefined) {
       Resource.encode(message.resource, writer.uint32(10).fork()).join();
     }
@@ -591,7 +601,8 @@ export const ResourceSpans: MessageFns<ResourceSpans> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): ResourceSpans {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResourceSpans();
     while (reader.pos < end) {
@@ -632,11 +643,15 @@ export const ResourceSpans: MessageFns<ResourceSpans> = {
 
   fromJSON(object: any): ResourceSpans {
     return {
-      resource: isSet(object.resource) ? Resource.fromJSON(object.resource) : undefined,
+      resource: isSet(object.resource)
+        ? Resource.fromJSON(object.resource)
+        : undefined,
       scopeSpans: globalThis.Array.isArray(object?.scopeSpans)
         ? object.scopeSpans.map((e: any) => ScopeSpans.fromJSON(e))
         : [],
-      schemaUrl: isSet(object.schemaUrl) ? globalThis.String(object.schemaUrl) : "",
+      schemaUrl: isSet(object.schemaUrl)
+        ? globalThis.String(object.schemaUrl)
+        : "",
     };
   },
 
@@ -654,15 +669,21 @@ export const ResourceSpans: MessageFns<ResourceSpans> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ResourceSpans>, I>>(base?: I): ResourceSpans {
+  create<I extends Exact<DeepPartial<ResourceSpans>, I>>(
+    base?: I,
+  ): ResourceSpans {
     return ResourceSpans.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ResourceSpans>, I>>(object: I): ResourceSpans {
+  fromPartial<I extends Exact<DeepPartial<ResourceSpans>, I>>(
+    object: I,
+  ): ResourceSpans {
     const message = createBaseResourceSpans();
-    message.resource = (object.resource !== undefined && object.resource !== null)
-      ? Resource.fromPartial(object.resource)
-      : undefined;
-    message.scopeSpans = object.scopeSpans?.map((e) => ScopeSpans.fromPartial(e)) || [];
+    message.resource =
+      object.resource !== undefined && object.resource !== null
+        ? Resource.fromPartial(object.resource)
+        : undefined;
+    message.scopeSpans =
+      object.scopeSpans?.map((e) => ScopeSpans.fromPartial(e)) || [];
     message.schemaUrl = object.schemaUrl ?? "";
     return message;
   },
@@ -673,9 +694,15 @@ function createBaseScopeSpans(): ScopeSpans {
 }
 
 export const ScopeSpans: MessageFns<ScopeSpans> = {
-  encode(message: ScopeSpans, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ScopeSpans,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.scope !== undefined) {
-      InstrumentationScope.encode(message.scope, writer.uint32(10).fork()).join();
+      InstrumentationScope.encode(
+        message.scope,
+        writer.uint32(10).fork(),
+      ).join();
     }
     for (const v of message.spans) {
       Span.encode(v!, writer.uint32(18).fork()).join();
@@ -687,7 +714,8 @@ export const ScopeSpans: MessageFns<ScopeSpans> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): ScopeSpans {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseScopeSpans();
     while (reader.pos < end) {
@@ -728,9 +756,15 @@ export const ScopeSpans: MessageFns<ScopeSpans> = {
 
   fromJSON(object: any): ScopeSpans {
     return {
-      scope: isSet(object.scope) ? InstrumentationScope.fromJSON(object.scope) : undefined,
-      spans: globalThis.Array.isArray(object?.spans) ? object.spans.map((e: any) => Span.fromJSON(e)) : [],
-      schemaUrl: isSet(object.schemaUrl) ? globalThis.String(object.schemaUrl) : "",
+      scope: isSet(object.scope)
+        ? InstrumentationScope.fromJSON(object.scope)
+        : undefined,
+      spans: globalThis.Array.isArray(object?.spans)
+        ? object.spans.map((e: any) => Span.fromJSON(e))
+        : [],
+      schemaUrl: isSet(object.schemaUrl)
+        ? globalThis.String(object.schemaUrl)
+        : "",
     };
   },
 
@@ -751,11 +785,14 @@ export const ScopeSpans: MessageFns<ScopeSpans> = {
   create<I extends Exact<DeepPartial<ScopeSpans>, I>>(base?: I): ScopeSpans {
     return ScopeSpans.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ScopeSpans>, I>>(object: I): ScopeSpans {
+  fromPartial<I extends Exact<DeepPartial<ScopeSpans>, I>>(
+    object: I,
+  ): ScopeSpans {
     const message = createBaseScopeSpans();
-    message.scope = (object.scope !== undefined && object.scope !== null)
-      ? InstrumentationScope.fromPartial(object.scope)
-      : undefined;
+    message.scope =
+      object.scope !== undefined && object.scope !== null
+        ? InstrumentationScope.fromPartial(object.scope)
+        : undefined;
     message.spans = object.spans?.map((e) => Span.fromPartial(e)) || [];
     message.schemaUrl = object.schemaUrl ?? "";
     return message;
@@ -784,7 +821,10 @@ function createBaseSpan(): Span {
 }
 
 export const Span: MessageFns<Span> = {
-  encode(message: Span, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Span,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.traceId.length !== 0) {
       writer.uint32(10).bytes(message.traceId);
     }
@@ -837,7 +877,8 @@ export const Span: MessageFns<Span> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Span {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSpan();
     while (reader.pos < end) {
@@ -982,25 +1023,45 @@ export const Span: MessageFns<Span> = {
 
   fromJSON(object: any): Span {
     return {
-      traceId: isSet(object.traceId) ? bytesFromBase64(object.traceId) : new Uint8Array(0),
-      spanId: isSet(object.spanId) ? bytesFromBase64(object.spanId) : new Uint8Array(0),
-      traceState: isSet(object.traceState) ? globalThis.String(object.traceState) : "",
-      parentSpanId: isSet(object.parentSpanId) ? bytesFromBase64(object.parentSpanId) : new Uint8Array(0),
+      traceId: isSet(object.traceId)
+        ? bytesFromBase64(object.traceId)
+        : new Uint8Array(0),
+      spanId: isSet(object.spanId)
+        ? bytesFromBase64(object.spanId)
+        : new Uint8Array(0),
+      traceState: isSet(object.traceState)
+        ? globalThis.String(object.traceState)
+        : "",
+      parentSpanId: isSet(object.parentSpanId)
+        ? bytesFromBase64(object.parentSpanId)
+        : new Uint8Array(0),
       flags: isSet(object.flags) ? globalThis.Number(object.flags) : 0,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       kind: isSet(object.kind) ? span_SpanKindFromJSON(object.kind) : 0,
-      startTimeUnixNano: isSet(object.startTimeUnixNano) ? globalThis.Number(object.startTimeUnixNano) : 0,
-      endTimeUnixNano: isSet(object.endTimeUnixNano) ? globalThis.Number(object.endTimeUnixNano) : 0,
+      startTimeUnixNano: isSet(object.startTimeUnixNano)
+        ? globalThis.Number(object.startTimeUnixNano)
+        : 0,
+      endTimeUnixNano: isSet(object.endTimeUnixNano)
+        ? globalThis.Number(object.endTimeUnixNano)
+        : 0,
       attributes: globalThis.Array.isArray(object?.attributes)
         ? object.attributes.map((e: any) => KeyValue.fromJSON(e))
         : [],
       droppedAttributesCount: isSet(object.droppedAttributesCount)
         ? globalThis.Number(object.droppedAttributesCount)
         : 0,
-      events: globalThis.Array.isArray(object?.events) ? object.events.map((e: any) => Span_Event.fromJSON(e)) : [],
-      droppedEventsCount: isSet(object.droppedEventsCount) ? globalThis.Number(object.droppedEventsCount) : 0,
-      links: globalThis.Array.isArray(object?.links) ? object.links.map((e: any) => Span_Link.fromJSON(e)) : [],
-      droppedLinksCount: isSet(object.droppedLinksCount) ? globalThis.Number(object.droppedLinksCount) : 0,
+      events: globalThis.Array.isArray(object?.events)
+        ? object.events.map((e: any) => Span_Event.fromJSON(e))
+        : [],
+      droppedEventsCount: isSet(object.droppedEventsCount)
+        ? globalThis.Number(object.droppedEventsCount)
+        : 0,
+      links: globalThis.Array.isArray(object?.links)
+        ? object.links.map((e: any) => Span_Link.fromJSON(e))
+        : [],
+      droppedLinksCount: isSet(object.droppedLinksCount)
+        ? globalThis.Number(object.droppedLinksCount)
+        : 0,
       status: isSet(object.status) ? Status.fromJSON(object.status) : undefined,
     };
   },
@@ -1072,25 +1133,35 @@ export const Span: MessageFns<Span> = {
     message.kind = object.kind ?? 0;
     message.startTimeUnixNano = object.startTimeUnixNano ?? 0;
     message.endTimeUnixNano = object.endTimeUnixNano ?? 0;
-    message.attributes = object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
+    message.attributes =
+      object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
     message.droppedAttributesCount = object.droppedAttributesCount ?? 0;
     message.events = object.events?.map((e) => Span_Event.fromPartial(e)) || [];
     message.droppedEventsCount = object.droppedEventsCount ?? 0;
     message.links = object.links?.map((e) => Span_Link.fromPartial(e)) || [];
     message.droppedLinksCount = object.droppedLinksCount ?? 0;
-    message.status = (object.status !== undefined && object.status !== null)
-      ? Status.fromPartial(object.status)
-      : undefined;
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? Status.fromPartial(object.status)
+        : undefined;
     return message;
   },
 };
 
 function createBaseSpan_Event(): Span_Event {
-  return { timeUnixNano: 0, name: "", attributes: [], droppedAttributesCount: 0 };
+  return {
+    timeUnixNano: 0,
+    name: "",
+    attributes: [],
+    droppedAttributesCount: 0,
+  };
 }
 
 export const Span_Event: MessageFns<Span_Event> = {
-  encode(message: Span_Event, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Span_Event,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.timeUnixNano !== 0) {
       writer.uint32(9).fixed64(message.timeUnixNano);
     }
@@ -1107,7 +1178,8 @@ export const Span_Event: MessageFns<Span_Event> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Span_Event {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSpan_Event();
     while (reader.pos < end) {
@@ -1156,7 +1228,9 @@ export const Span_Event: MessageFns<Span_Event> = {
 
   fromJSON(object: any): Span_Event {
     return {
-      timeUnixNano: isSet(object.timeUnixNano) ? globalThis.Number(object.timeUnixNano) : 0,
+      timeUnixNano: isSet(object.timeUnixNano)
+        ? globalThis.Number(object.timeUnixNano)
+        : 0,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       attributes: globalThis.Array.isArray(object?.attributes)
         ? object.attributes.map((e: any) => KeyValue.fromJSON(e))
@@ -1187,11 +1261,14 @@ export const Span_Event: MessageFns<Span_Event> = {
   create<I extends Exact<DeepPartial<Span_Event>, I>>(base?: I): Span_Event {
     return Span_Event.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<Span_Event>, I>>(object: I): Span_Event {
+  fromPartial<I extends Exact<DeepPartial<Span_Event>, I>>(
+    object: I,
+  ): Span_Event {
     const message = createBaseSpan_Event();
     message.timeUnixNano = object.timeUnixNano ?? 0;
     message.name = object.name ?? "";
-    message.attributes = object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
+    message.attributes =
+      object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
     message.droppedAttributesCount = object.droppedAttributesCount ?? 0;
     return message;
   },
@@ -1209,7 +1286,10 @@ function createBaseSpan_Link(): Span_Link {
 }
 
 export const Span_Link: MessageFns<Span_Link> = {
-  encode(message: Span_Link, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Span_Link,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.traceId.length !== 0) {
       writer.uint32(10).bytes(message.traceId);
     }
@@ -1232,7 +1312,8 @@ export const Span_Link: MessageFns<Span_Link> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Span_Link {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSpan_Link();
     while (reader.pos < end) {
@@ -1297,9 +1378,15 @@ export const Span_Link: MessageFns<Span_Link> = {
 
   fromJSON(object: any): Span_Link {
     return {
-      traceId: isSet(object.traceId) ? bytesFromBase64(object.traceId) : new Uint8Array(0),
-      spanId: isSet(object.spanId) ? bytesFromBase64(object.spanId) : new Uint8Array(0),
-      traceState: isSet(object.traceState) ? globalThis.String(object.traceState) : "",
+      traceId: isSet(object.traceId)
+        ? bytesFromBase64(object.traceId)
+        : new Uint8Array(0),
+      spanId: isSet(object.spanId)
+        ? bytesFromBase64(object.spanId)
+        : new Uint8Array(0),
+      traceState: isSet(object.traceState)
+        ? globalThis.String(object.traceState)
+        : "",
       attributes: globalThis.Array.isArray(object?.attributes)
         ? object.attributes.map((e: any) => KeyValue.fromJSON(e))
         : [],
@@ -1336,12 +1423,15 @@ export const Span_Link: MessageFns<Span_Link> = {
   create<I extends Exact<DeepPartial<Span_Link>, I>>(base?: I): Span_Link {
     return Span_Link.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<Span_Link>, I>>(object: I): Span_Link {
+  fromPartial<I extends Exact<DeepPartial<Span_Link>, I>>(
+    object: I,
+  ): Span_Link {
     const message = createBaseSpan_Link();
     message.traceId = object.traceId ?? new Uint8Array(0);
     message.spanId = object.spanId ?? new Uint8Array(0);
     message.traceState = object.traceState ?? "";
-    message.attributes = object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
+    message.attributes =
+      object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
     message.droppedAttributesCount = object.droppedAttributesCount ?? 0;
     message.flags = object.flags ?? 0;
     return message;
@@ -1353,7 +1443,10 @@ function createBaseStatus(): Status {
 }
 
 export const Status: MessageFns<Status> = {
-  encode(message: Status, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Status,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
@@ -1364,7 +1457,8 @@ export const Status: MessageFns<Status> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Status {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStatus();
     while (reader.pos < end) {
@@ -1449,17 +1543,31 @@ function base64FromBytes(arr: Uint8Array): string {
   }
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());

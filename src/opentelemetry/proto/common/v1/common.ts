@@ -130,7 +130,10 @@ function createBaseAnyValue(): AnyValue {
 }
 
 export const AnyValue: MessageFns<AnyValue> = {
-  encode(message: AnyValue, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: AnyValue,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.stringValue !== undefined) {
       writer.uint32(10).string(message.stringValue);
     }
@@ -156,7 +159,8 @@ export const AnyValue: MessageFns<AnyValue> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): AnyValue {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAnyValue();
     while (reader.pos < end) {
@@ -229,13 +233,27 @@ export const AnyValue: MessageFns<AnyValue> = {
 
   fromJSON(object: any): AnyValue {
     return {
-      stringValue: isSet(object.stringValue) ? globalThis.String(object.stringValue) : undefined,
-      boolValue: isSet(object.boolValue) ? globalThis.Boolean(object.boolValue) : undefined,
-      intValue: isSet(object.intValue) ? globalThis.Number(object.intValue) : undefined,
-      doubleValue: isSet(object.doubleValue) ? globalThis.Number(object.doubleValue) : undefined,
-      arrayValue: isSet(object.arrayValue) ? ArrayValue.fromJSON(object.arrayValue) : undefined,
-      kvlistValue: isSet(object.kvlistValue) ? KeyValueList.fromJSON(object.kvlistValue) : undefined,
-      bytesValue: isSet(object.bytesValue) ? bytesFromBase64(object.bytesValue) : undefined,
+      stringValue: isSet(object.stringValue)
+        ? globalThis.String(object.stringValue)
+        : undefined,
+      boolValue: isSet(object.boolValue)
+        ? globalThis.Boolean(object.boolValue)
+        : undefined,
+      intValue: isSet(object.intValue)
+        ? globalThis.Number(object.intValue)
+        : undefined,
+      doubleValue: isSet(object.doubleValue)
+        ? globalThis.Number(object.doubleValue)
+        : undefined,
+      arrayValue: isSet(object.arrayValue)
+        ? ArrayValue.fromJSON(object.arrayValue)
+        : undefined,
+      kvlistValue: isSet(object.kvlistValue)
+        ? KeyValueList.fromJSON(object.kvlistValue)
+        : undefined,
+      bytesValue: isSet(object.bytesValue)
+        ? bytesFromBase64(object.bytesValue)
+        : undefined,
     };
   },
 
@@ -274,12 +292,14 @@ export const AnyValue: MessageFns<AnyValue> = {
     message.boolValue = object.boolValue ?? undefined;
     message.intValue = object.intValue ?? undefined;
     message.doubleValue = object.doubleValue ?? undefined;
-    message.arrayValue = (object.arrayValue !== undefined && object.arrayValue !== null)
-      ? ArrayValue.fromPartial(object.arrayValue)
-      : undefined;
-    message.kvlistValue = (object.kvlistValue !== undefined && object.kvlistValue !== null)
-      ? KeyValueList.fromPartial(object.kvlistValue)
-      : undefined;
+    message.arrayValue =
+      object.arrayValue !== undefined && object.arrayValue !== null
+        ? ArrayValue.fromPartial(object.arrayValue)
+        : undefined;
+    message.kvlistValue =
+      object.kvlistValue !== undefined && object.kvlistValue !== null
+        ? KeyValueList.fromPartial(object.kvlistValue)
+        : undefined;
     message.bytesValue = object.bytesValue ?? undefined;
     return message;
   },
@@ -290,7 +310,10 @@ function createBaseArrayValue(): ArrayValue {
 }
 
 export const ArrayValue: MessageFns<ArrayValue> = {
-  encode(message: ArrayValue, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ArrayValue,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.values) {
       AnyValue.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -298,7 +321,8 @@ export const ArrayValue: MessageFns<ArrayValue> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): ArrayValue {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseArrayValue();
     while (reader.pos < end) {
@@ -323,7 +347,9 @@ export const ArrayValue: MessageFns<ArrayValue> = {
 
   fromJSON(object: any): ArrayValue {
     return {
-      values: globalThis.Array.isArray(object?.values) ? object.values.map((e: any) => AnyValue.fromJSON(e)) : [],
+      values: globalThis.Array.isArray(object?.values)
+        ? object.values.map((e: any) => AnyValue.fromJSON(e))
+        : [],
     };
   },
 
@@ -338,7 +364,9 @@ export const ArrayValue: MessageFns<ArrayValue> = {
   create<I extends Exact<DeepPartial<ArrayValue>, I>>(base?: I): ArrayValue {
     return ArrayValue.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ArrayValue>, I>>(object: I): ArrayValue {
+  fromPartial<I extends Exact<DeepPartial<ArrayValue>, I>>(
+    object: I,
+  ): ArrayValue {
     const message = createBaseArrayValue();
     message.values = object.values?.map((e) => AnyValue.fromPartial(e)) || [];
     return message;
@@ -350,7 +378,10 @@ function createBaseKeyValueList(): KeyValueList {
 }
 
 export const KeyValueList: MessageFns<KeyValueList> = {
-  encode(message: KeyValueList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: KeyValueList,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.values) {
       KeyValue.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -358,7 +389,8 @@ export const KeyValueList: MessageFns<KeyValueList> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): KeyValueList {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseKeyValueList();
     while (reader.pos < end) {
@@ -383,7 +415,9 @@ export const KeyValueList: MessageFns<KeyValueList> = {
 
   fromJSON(object: any): KeyValueList {
     return {
-      values: globalThis.Array.isArray(object?.values) ? object.values.map((e: any) => KeyValue.fromJSON(e)) : [],
+      values: globalThis.Array.isArray(object?.values)
+        ? object.values.map((e: any) => KeyValue.fromJSON(e))
+        : [],
     };
   },
 
@@ -395,10 +429,14 @@ export const KeyValueList: MessageFns<KeyValueList> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<KeyValueList>, I>>(base?: I): KeyValueList {
+  create<I extends Exact<DeepPartial<KeyValueList>, I>>(
+    base?: I,
+  ): KeyValueList {
     return KeyValueList.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<KeyValueList>, I>>(object: I): KeyValueList {
+  fromPartial<I extends Exact<DeepPartial<KeyValueList>, I>>(
+    object: I,
+  ): KeyValueList {
     const message = createBaseKeyValueList();
     message.values = object.values?.map((e) => KeyValue.fromPartial(e)) || [];
     return message;
@@ -410,7 +448,10 @@ function createBaseKeyValue(): KeyValue {
 }
 
 export const KeyValue: MessageFns<KeyValue> = {
-  encode(message: KeyValue, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: KeyValue,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -421,7 +462,8 @@ export const KeyValue: MessageFns<KeyValue> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): KeyValue {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseKeyValue();
     while (reader.pos < end) {
@@ -476,9 +518,10 @@ export const KeyValue: MessageFns<KeyValue> = {
   fromPartial<I extends Exact<DeepPartial<KeyValue>, I>>(object: I): KeyValue {
     const message = createBaseKeyValue();
     message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? AnyValue.fromPartial(object.value)
-      : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? AnyValue.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -488,7 +531,10 @@ function createBaseInstrumentationScope(): InstrumentationScope {
 }
 
 export const InstrumentationScope: MessageFns<InstrumentationScope> = {
-  encode(message: InstrumentationScope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: InstrumentationScope,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -504,8 +550,12 @@ export const InstrumentationScope: MessageFns<InstrumentationScope> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): InstrumentationScope {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): InstrumentationScope {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInstrumentationScope();
     while (reader.pos < end) {
@@ -582,14 +632,19 @@ export const InstrumentationScope: MessageFns<InstrumentationScope> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<InstrumentationScope>, I>>(base?: I): InstrumentationScope {
+  create<I extends Exact<DeepPartial<InstrumentationScope>, I>>(
+    base?: I,
+  ): InstrumentationScope {
     return InstrumentationScope.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<InstrumentationScope>, I>>(object: I): InstrumentationScope {
+  fromPartial<I extends Exact<DeepPartial<InstrumentationScope>, I>>(
+    object: I,
+  ): InstrumentationScope {
     const message = createBaseInstrumentationScope();
     message.name = object.name ?? "";
     message.version = object.version ?? "";
-    message.attributes = object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
+    message.attributes =
+      object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
     message.droppedAttributesCount = object.droppedAttributesCount ?? 0;
     return message;
   },
@@ -600,7 +655,10 @@ function createBaseEntityRef(): EntityRef {
 }
 
 export const EntityRef: MessageFns<EntityRef> = {
-  encode(message: EntityRef, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: EntityRef,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.schemaUrl !== "") {
       writer.uint32(10).string(message.schemaUrl);
     }
@@ -617,7 +675,8 @@ export const EntityRef: MessageFns<EntityRef> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): EntityRef {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEntityRef();
     while (reader.pos < end) {
@@ -666,9 +725,13 @@ export const EntityRef: MessageFns<EntityRef> = {
 
   fromJSON(object: any): EntityRef {
     return {
-      schemaUrl: isSet(object.schemaUrl) ? globalThis.String(object.schemaUrl) : "",
+      schemaUrl: isSet(object.schemaUrl)
+        ? globalThis.String(object.schemaUrl)
+        : "",
       type: isSet(object.type) ? globalThis.String(object.type) : "",
-      idKeys: globalThis.Array.isArray(object?.idKeys) ? object.idKeys.map((e: any) => globalThis.String(e)) : [],
+      idKeys: globalThis.Array.isArray(object?.idKeys)
+        ? object.idKeys.map((e: any) => globalThis.String(e))
+        : [],
       descriptionKeys: globalThis.Array.isArray(object?.descriptionKeys)
         ? object.descriptionKeys.map((e: any) => globalThis.String(e))
         : [],
@@ -695,7 +758,9 @@ export const EntityRef: MessageFns<EntityRef> = {
   create<I extends Exact<DeepPartial<EntityRef>, I>>(base?: I): EntityRef {
     return EntityRef.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<EntityRef>, I>>(object: I): EntityRef {
+  fromPartial<I extends Exact<DeepPartial<EntityRef>, I>>(
+    object: I,
+  ): EntityRef {
     const message = createBaseEntityRef();
     message.schemaUrl = object.schemaUrl ?? "";
     message.type = object.type ?? "";
@@ -730,17 +795,31 @@ function base64FromBytes(arr: Uint8Array): string {
   }
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());
