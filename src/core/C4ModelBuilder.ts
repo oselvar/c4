@@ -129,7 +129,7 @@ export class C4ModelBuilder implements C4ModelBuilder {
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
-    // TODO: The aboove goes
+
     this.ready.then(() => {
       const tracer = trace.getTracer("@oselvar/c4");
       tracer
@@ -142,7 +142,6 @@ export class C4ModelBuilder implements C4ModelBuilder {
         })
         .end();
     });
-
     return name;
   }
 
@@ -205,12 +204,10 @@ export class C4ModelBuilder implements C4ModelBuilder {
     this.callchains.push(callchain);
     this.callchain = callchain;
 
-    this.ready.then(() => {
-      this.endSpan();
-      const tracer = trace.getTracer("@oselvar/c4");
-      const span = tracer.startSpan(`callchain:${name}`);
-      this.endSpan = () => span.end();
-    });
+    this.endSpan();
+    const tracer = trace.getTracer("@oselvar/c4");
+    const span = tracer.startSpan(`callchain:${name}`);
+    this.endSpan = () => span.end();
   }
 
   /**
@@ -229,17 +226,14 @@ export class C4ModelBuilder implements C4ModelBuilder {
       throw new Error("Callchain not started");
     }
 
-    this.ready.then(() => {
-      const span = trace.getActiveSpan();
-      if (!span) {
-        return;
-      }
+    const span = trace.getActiveSpan();
+    if (span) {
       span.addEvent("call", {
         callerName,
         calleeName,
         operationName,
       });
-    });
+    }
     this.callchain.calls.push(call);
   }
 
