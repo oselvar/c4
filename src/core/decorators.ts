@@ -29,18 +29,6 @@ export function C4SoftwareSystem<T extends SoftwareSystem>(
     globalC4ModelBuilder.addSoftwareSystem(system.name as C4Name, {
       tags: params?.tags,
     });
-
-    console.log("C4SoftwareSystem", system.name);
-
-    const tracer = trace.getTracer("@oselvar/c4/call");
-    tracer
-      .startSpan(system.name, {
-        attributes: {
-          "c4.softwareSystem": system.name,
-        },
-      })
-      .end();
-
     return system;
   };
 }

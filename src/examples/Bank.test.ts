@@ -7,19 +7,20 @@ import {
 } from "@opentelemetry/sdk-trace-base";
 import { beforeEach, describe, it } from "vitest";
 
+import { globalC4Ready } from "../core";
 import { Database, SecurityComponent, SignInController } from "./Bank";
 
 describe("Bank", () => {
   let processor: BatchSpanProcessor;
   let sdk: NodeSDK;
-  let spans: ReadableSpan[];
+  let spanLists: ReadableSpan[][];
 
   beforeEach(() => {
-    spans = [];
+    spanLists = [];
 
     processor = new BatchSpanProcessor({
       export: (_spans, resultCallback) => {
-        spans = [...spans, ..._spans];
+        spanLists = [...spanLists, _spans];
         resultCallback({ code: ExportResultCode.SUCCESS });
       },
       shutdown: async () => {},
@@ -30,7 +31,10 @@ describe("Bank", () => {
       instrumentations: [getNodeAutoInstrumentations()],
     });
 
+    console.log("Starting SDK");
     sdk.start();
+    console.log("SDK started");
+    globalC4Ready();
   });
 
   it("keeps or money safe", async () => {
@@ -43,6 +47,8 @@ describe("Bank", () => {
     await processor.forceFlush();
     await sdk.shutdown();
 
-    console.log(spans.length);
+    // for (const spanList of spanLists) {
+    //   console.log(spanList);
+    // }
   });
 });

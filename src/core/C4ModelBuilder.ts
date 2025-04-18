@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import { closest } from "fastest-levenshtein";
 
 import type {
@@ -36,8 +37,12 @@ export class C4ModelBuilder implements C4ModelBuilder {
   private readonly objectByName = new Map<C4Name, C4Object>();
   private readonly callchains: C4Callchain[];
   private callchain: C4Callchain | null = null;
+  private endSpan: () => void = () => {};
 
-  constructor(c4Model: C4Model = { objects: {}, callchains: [] }) {
+  constructor(
+    c4Model: C4Model = { objects: {}, callchains: [] },
+    private readonly ready: Promise<void>,
+  ) {
     this.objectByName = new Map(
       Object.entries(c4Model.objects).map(([, object]) => [
         object.name,
@@ -70,6 +75,19 @@ export class C4ModelBuilder implements C4ModelBuilder {
       tags: params?.tags || [],
       parentName: params?.parentName as C4Name | null,
     });
+
+    this.ready.then(() => {
+      const tracer = trace.getTracer("@oselvar/c4");
+      tracer
+        .startSpan(type, {
+          attributes: {
+            name,
+            tags: [...(params?.tags || [])],
+            parentName: params?.parentName as C4Name,
+          },
+        })
+        .end();
+    });
     return name;
   }
 
@@ -83,6 +101,19 @@ export class C4ModelBuilder implements C4ModelBuilder {
       name,
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
+    });
+
+    this.ready.then(() => {
+      const tracer = trace.getTracer("@oselvar/c4");
+      tracer
+        .startSpan(type, {
+          attributes: {
+            name,
+            tags: [...(params?.tags || [])],
+            parentName: params?.parentName as C4Name,
+          },
+        })
+        .end();
     });
     return name;
   }
@@ -98,6 +129,20 @@ export class C4ModelBuilder implements C4ModelBuilder {
       tags: params?.tags || [],
       parentName: (params?.parentName as C4Name) || null,
     });
+    // TODO: The aboove goes
+    this.ready.then(() => {
+      const tracer = trace.getTracer("@oselvar/c4");
+      tracer
+        .startSpan(type, {
+          attributes: {
+            name,
+            tags: [...(params?.tags || [])],
+            parentName: params?.parentName as C4Name,
+          },
+        })
+        .end();
+    });
+
     return name;
   }
 
@@ -112,6 +157,19 @@ export class C4ModelBuilder implements C4ModelBuilder {
       tags: params?.tags || [],
       parentName: params.softwareSystem as C4Name,
     });
+
+    this.ready.then(() => {
+      const tracer = trace.getTracer("@oselvar/c4");
+      tracer
+        .startSpan(type, {
+          attributes: {
+            name,
+            tags: [...(params?.tags || [])],
+            parentName: params?.softwareSystem as C4Name,
+          },
+        })
+        .end();
+    });
     return name;
   }
 
@@ -123,6 +181,19 @@ export class C4ModelBuilder implements C4ModelBuilder {
       tags: params?.tags || [],
       parentName: params.container as C4Name,
     });
+
+    this.ready.then(() => {
+      const tracer = trace.getTracer("@oselvar/c4");
+      tracer
+        .startSpan(type, {
+          attributes: {
+            name,
+            tags: [...(params?.tags || [])],
+            parentName: params?.container as C4Name,
+          },
+        })
+        .end();
+    });
     return name;
   }
 
@@ -133,6 +204,13 @@ export class C4ModelBuilder implements C4ModelBuilder {
     };
     this.callchains.push(callchain);
     this.callchain = callchain;
+
+    this.ready.then(() => {
+      this.endSpan();
+      const tracer = trace.getTracer("@oselvar/c4");
+      const span = tracer.startSpan(`callchain:${name}`);
+      this.endSpan = () => span.end();
+    });
   }
 
   /**
@@ -150,6 +228,18 @@ export class C4ModelBuilder implements C4ModelBuilder {
     if (!this.callchain) {
       throw new Error("Callchain not started");
     }
+
+    this.ready.then(() => {
+      const span = trace.getActiveSpan();
+      if (!span) {
+        return;
+      }
+      span.addEvent("call", {
+        callerName,
+        calleeName,
+        operationName,
+      });
+    });
     this.callchain.calls.push(call);
   }
 

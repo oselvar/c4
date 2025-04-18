@@ -4,7 +4,7 @@ import { getUniqueCalls } from "../core/getUniqueCalls";
 import { callKey, camelCase, objectKey } from "../core/strings";
 
 export function toStructurizr(model: C4Model): string {
-  const builder = new C4ModelBuilder(model);
+  const builder = new C4ModelBuilder(model, Promise.resolve());
 
   let s = `workspace {\n  model {\n`;
   const level = 2;
@@ -53,7 +53,7 @@ export function toStructurizr(model: C4Model): string {
 }
 
 export function toLikeC4(model: C4Model): string {
-  const builder = new C4ModelBuilder(model);
+  const builder = new C4ModelBuilder(model, Promise.resolve());
 
   let s = `model {\n`;
   const level = 1;

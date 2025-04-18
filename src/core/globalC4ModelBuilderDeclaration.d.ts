@@ -6,4 +6,5 @@ import type { C4ModelBuilder } from "./C4ModelBuilder";
 declare global {
   var __C4_MODEL_BUILDER__: C4ModelBuilder;
   var __C4_CALLCHAIN_BUILDER__: C4CallchainBuilder;
+  var __C4_READY_RESOLVE__: () => void;
 }
