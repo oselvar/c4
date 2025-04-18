@@ -206,9 +206,17 @@ export class C4ModelBuilder {
 
     this.endSpan();
     const tracer = trace.getTracer("@oselvar/c4");
-    const span = tracer.startSpan(`callchain`);
-    span.setAttribute("name", name);
-    this.endSpan = () => span.end();
+    tracer.startActiveSpan(
+      `callchain`,
+      {
+        attributes: {
+          name,
+        },
+      },
+      (span) => {
+        this.endSpan = () => span.end();
+      },
+    );
   }
 
   /**
@@ -227,14 +235,6 @@ export class C4ModelBuilder {
       throw new Error("Callchain not started");
     }
 
-    const span = trace.getActiveSpan();
-    if (span) {
-      span.addEvent("call", {
-        callerName,
-        calleeName,
-        operationName,
-      });
-    }
     this.callchain.calls.push(call);
   }
 

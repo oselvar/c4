@@ -25,7 +25,7 @@
             {
               "key": "process.pid",
               "value": {
-                "intValue": 78754
+                "intValue": 15664
               }
             },
             {
@@ -131,12 +131,12 @@
             },
             "spans": [
               {
-                "traceId": "d04949f463052e58e09546a795ccc22c",
-                "spanId": "b50b85249f33b8b8",
+                "traceId": "e9b38b5a0d452e4315bbafe2f742f5df",
+                "spanId": "8199df76c521b0d6",
                 "name": "softwareSystem",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549046000000",
-                "endTimeUnixNano": "1744998549046137666",
+                "startTimeUnixNano": "1745020113841000000",
+                "endTimeUnixNano": "1745020113841390666",
                 "attributes": [
                   {
                     "key": "name",
@@ -163,12 +163,12 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "75f72518d1dbd729b08e622965ebea09",
-                "spanId": "c979357830c710d8",
+                "traceId": "298a9a28b03266e4d3898094fa7be733",
+                "spanId": "d603aa69ebc14b95",
                 "name": "container",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549047011375",
+                "startTimeUnixNano": "1745020113843000000",
+                "endTimeUnixNano": "1745020113843015625",
                 "attributes": [
                   {
                     "key": "name",
@@ -201,12 +201,12 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "30848f54732f588b0660068b6aa8c63f",
-                "spanId": "9ce31093063937fe",
+                "traceId": "7bce05bd7c381c8353f828a82cd3aa06",
+                "spanId": "e3671795465f8ebe",
                 "name": "container",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549047058667",
+                "startTimeUnixNano": "1745020113844000000",
+                "endTimeUnixNano": "1745020113844085708",
                 "attributes": [
                   {
                     "key": "name",
@@ -239,12 +239,12 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "a0c3e53356439bed28bdcdbcb8df818c",
-                "spanId": "397aceab006c7ea7",
+                "traceId": "2ebadde8fc940d001e9f699951da4967",
+                "spanId": "8892ffef5206e9ec",
                 "name": "component",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549047011333",
+                "startTimeUnixNano": "1745020113844000000",
+                "endTimeUnixNano": "1745020113844012500",
                 "attributes": [
                   {
                     "key": "name",
@@ -277,12 +277,12 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "aeac01ac11f045edc60d7cf2c404f427",
-                "spanId": "31265f4249b42d80",
+                "traceId": "fc661a4fde6965a126222a0880dd52f1",
+                "spanId": "297550ccf2acb914",
                 "name": "component",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549047005500",
+                "startTimeUnixNano": "1745020113844000000",
+                "endTimeUnixNano": "1745020113844007208",
                 "attributes": [
                   {
                     "key": "name",
@@ -315,12 +315,12 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "563b0509d121d40034193f663ab3f5bf",
-                "spanId": "55df6eaf8704222d",
+                "traceId": "7ff8d50ca663ceafcbcd2c24b477e9b3",
+                "spanId": "5129cdef8e7e7bfa",
                 "name": "container",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549047010875",
+                "startTimeUnixNano": "1745020113844000000",
+                "endTimeUnixNano": "1745020113844013833",
                 "attributes": [
                   {
                     "key": "name",
@@ -357,14 +357,33 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "21affeeecf4e63ca0bd911ca80524e89",
-                "spanId": "4abd1f822de117ce",
-                "parentSpanId": "5d15f3ad0b9d9d1c",
+                "traceId": "51594f44d9ed302097dd183e71d2c07f",
+                "spanId": "c93d94acabd257a5",
+                "parentSpanId": "2f614992b01d0ddd",
                 "name": "call",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549052000000",
-                "endTimeUnixNano": "1744998549052178917",
-                "attributes": [],
+                "startTimeUnixNano": "1745020113852000000",
+                "endTimeUnixNano": "1745020113852039833",
+                "attributes": [
+                  {
+                    "key": "callerName",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "Database"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "readCredentials"
+                    }
+                  }
+                ],
                 "droppedAttributesCount": 0,
                 "events": [],
                 "droppedEventsCount": 0,
@@ -375,41 +394,35 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "21affeeecf4e63ca0bd911ca80524e89",
-                "spanId": "5d15f3ad0b9d9d1c",
+                "traceId": "51594f44d9ed302097dd183e71d2c07f",
+                "spanId": "2f614992b01d0ddd",
+                "parentSpanId": "6bf3aa6398921c23",
                 "name": "call",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549050000000",
-                "endTimeUnixNano": "1744998549052404083",
-                "attributes": [],
-                "droppedAttributesCount": 0,
-                "events": [
+                "startTimeUnixNano": "1745020113852000000",
+                "endTimeUnixNano": "1745020113852588250",
+                "attributes": [
                   {
-                    "attributes": [
-                      {
-                        "key": "callerName",
-                        "value": {
-                          "stringValue": "SecurityComponent"
-                        }
-                      },
-                      {
-                        "key": "calleeName",
-                        "value": {
-                          "stringValue": "Database"
-                        }
-                      },
-                      {
-                        "key": "operationName",
-                        "value": {
-                          "stringValue": "readCredentials"
-                        }
-                      }
-                    ],
-                    "name": "call",
-                    "timeUnixNano": "1744998549052044667",
-                    "droppedAttributesCount": 0
+                    "key": "callerName",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "checkCredentials"
+                    }
                   }
                 ],
+                "droppedAttributesCount": 0,
+                "events": [],
                 "droppedEventsCount": 0,
                 "status": {
                   "code": 0
@@ -418,12 +431,42 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "c0a9d1942ac71dc15327af72d8e5c542",
-                "spanId": "000f121d0af91460",
+                "traceId": "51594f44d9ed302097dd183e71d2c07f",
+                "spanId": "6bf3aa6398921c23",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1745020113849000000",
+                "endTimeUnixNano": "1745020113852270750",
+                "attributes": [
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "signIn"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "b13f2d1d8231fed6b8dc0317e2b639b0",
+                "spanId": "67cc383058785117",
                 "name": "callchain",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549047000000",
-                "endTimeUnixNano": "1744998549052276500",
+                "startTimeUnixNano": "1745020113846000000",
+                "endTimeUnixNano": "1745020113853360333",
                 "attributes": [
                   {
                     "key": "name",
@@ -442,14 +485,33 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "86b6b209b7131f5a548902ca8e506edb",
-                "spanId": "b9962ec6be078713",
-                "parentSpanId": "1efc6cc49ca4e7c4",
+                "traceId": "cb873d2c55a4e78a9e7ab200609cd556",
+                "spanId": "72715150825eb0cf",
+                "parentSpanId": "4d894f6697df7d75",
                 "name": "call",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549053000000",
-                "endTimeUnixNano": "1744998549053010625",
-                "attributes": [],
+                "startTimeUnixNano": "1745020113854000000",
+                "endTimeUnixNano": "1745020113854012583",
+                "attributes": [
+                  {
+                    "key": "callerName",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "Database"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "readCredentials"
+                    }
+                  }
+                ],
                 "droppedAttributesCount": 0,
                 "events": [],
                 "droppedEventsCount": 0,
@@ -460,41 +522,65 @@
                 "droppedLinksCount": 0
               },
               {
-                "traceId": "86b6b209b7131f5a548902ca8e506edb",
-                "spanId": "1efc6cc49ca4e7c4",
+                "traceId": "cb873d2c55a4e78a9e7ab200609cd556",
+                "spanId": "4d894f6697df7d75",
+                "parentSpanId": "06e512c45b2ed6bd",
                 "name": "call",
                 "kind": 1,
-                "startTimeUnixNano": "1744998549053000000",
-                "endTimeUnixNano": "1744998549053150959",
-                "attributes": [],
-                "droppedAttributesCount": 0,
-                "events": [
+                "startTimeUnixNano": "1745020113854000000",
+                "endTimeUnixNano": "1745020113854145292",
+                "attributes": [
                   {
-                    "attributes": [
-                      {
-                        "key": "callerName",
-                        "value": {
-                          "stringValue": "SecurityComponent"
-                        }
-                      },
-                      {
-                        "key": "calleeName",
-                        "value": {
-                          "stringValue": "Database"
-                        }
-                      },
-                      {
-                        "key": "operationName",
-                        "value": {
-                          "stringValue": "readCredentials"
-                        }
-                      }
-                    ],
-                    "name": "call",
-                    "timeUnixNano": "1744998549053120834",
-                    "droppedAttributesCount": 0
+                    "key": "callerName",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "SecurityComponent"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "checkCredentials"
+                    }
                   }
                 ],
+                "droppedAttributesCount": 0,
+                "events": [],
+                "droppedEventsCount": 0,
+                "status": {
+                  "code": 0
+                },
+                "links": [],
+                "droppedLinksCount": 0
+              },
+              {
+                "traceId": "cb873d2c55a4e78a9e7ab200609cd556",
+                "spanId": "06e512c45b2ed6bd",
+                "name": "call",
+                "kind": 1,
+                "startTimeUnixNano": "1745020113854000000",
+                "endTimeUnixNano": "1745020113854295417",
+                "attributes": [
+                  {
+                    "key": "calleeName",
+                    "value": {
+                      "stringValue": "SignInController"
+                    }
+                  },
+                  {
+                    "key": "operationName",
+                    "value": {
+                      "stringValue": "signIn"
+                    }
+                  }
+                ],
+                "droppedAttributesCount": 0,
+                "events": [],
                 "droppedEventsCount": 0,
                 "status": {
                   "code": 0

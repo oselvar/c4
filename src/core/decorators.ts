@@ -4,7 +4,6 @@
 import { basename, extname } from "node:path";
 
 import { trace } from "@opentelemetry/api";
-import debug from "debug";
 import ErrorStackParser from "error-stack-parser";
 
 import type { C4Name } from "./C4Model";
@@ -20,10 +19,8 @@ type SoftwareSystem = Constructor;
 type Container = Constructor;
 type Component = Constructor;
 
-const log = debug("@oselvar/c4");
-
 export function C4SoftwareSystem<T extends SoftwareSystem>(
-  params?: C4SoftwareSystemParams
+  params?: C4SoftwareSystemParams,
 ) {
   return (system: T) => {
     globalC4ModelBuilder.addSoftwareSystem(system.name as C4Name, {
@@ -83,7 +80,7 @@ export function C4Operation(): MethodDecorator {
 }
 
 function c4OperationWrapper(method: Function) {
-  function wrapper(this: Function, ...args: unknown[]) {
+  async function wrapper(this: Function, ...args: unknown[]) {
     const calleeName = this.constructor.name as C4Name;
 
     const stack = ErrorStackParser.parse(new Error());
@@ -92,42 +89,35 @@ function c4OperationWrapper(method: Function) {
       .filter((frame) => !frame.fileName?.match(/^node:internal/))
       .flatMap(toClassNames);
 
-    if (callerClassNameCandidates.length === 0) {
-      log(
-        `@oselvar/c4: Could not determine any caller class names from stack: ${JSON.stringify(stack)}`
-      );
-    }
-
     const callerName = callerClassNameCandidates.find(
       (callerName) =>
-        callerName !== calleeName && globalC4ModelBuilder.hasObject(callerName)
+        callerName !== calleeName && globalC4ModelBuilder.hasObject(callerName),
     );
 
-    if (!callerName) {
-      log(
-        `@oselvar/c4:  No caller for ${calleeName}: ${JSON.stringify(stack, null, 2)}`
-      );
-    }
-
     const operationName = method.name;
-
     if (callerName) {
       globalC4ModelBuilder.addCall(callerName, calleeName, operationName);
     }
 
-    if (callerName) {
-      // TODO: Move this to the model builder so all otel logic it in one place
-      const tracer = trace.getTracer("@oselvar/c4");
-      return tracer.startActiveSpan("call", async (span) => {
+    // TODO: Move this to the model builder so all otel logic it in one place
+    const tracer = trace.getTracer("@oselvar/c4");
+    return tracer.startActiveSpan(
+      "call",
+      {
+        attributes: {
+          callerName,
+          calleeName,
+          operationName,
+        },
+      },
+      async (span) => {
         try {
           return await method.apply(this, args);
         } finally {
           span.end();
         }
-      });
-    }
-
-    return method.apply(this, args);
+      },
+    );
   }
   return wrapper;
 }
@@ -140,7 +130,7 @@ function toClassNames(frame: ErrorStackParser.StackFrame): readonly C4Name[] {
   }
   if (frame.fileName) {
     classNames.push(
-      basename(frame.fileName, extname(frame.fileName)) as C4Name
+      basename(frame.fileName, extname(frame.fileName)) as C4Name,
     );
   }
   return classNames;
