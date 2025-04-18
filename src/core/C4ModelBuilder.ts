@@ -33,7 +33,7 @@ export type C4ComponentParams = C4ObjectParams & {
   container: string;
 };
 
-export class C4ModelBuilder implements C4ModelBuilder {
+export class C4ModelBuilder {
   private readonly objectByName = new Map<C4Name, C4Object>();
   private readonly callchains: C4Callchain[];
   private callchain: C4Callchain | null = null;
@@ -206,7 +206,8 @@ export class C4ModelBuilder implements C4ModelBuilder {
 
     this.endSpan();
     const tracer = trace.getTracer("@oselvar/c4");
-    const span = tracer.startSpan(`callchain:${name}`);
+    const span = tracer.startSpan(`callchain`);
+    span.setAttribute("name", name);
     this.endSpan = () => span.end();
   }
 

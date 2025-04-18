@@ -120,9 +120,9 @@ function c4OperationWrapper(method: Function) {
       const tracer = trace.getTracer("@oselvar/c4");
       return tracer.startActiveSpan("call", async (span) => {
         try {
-          span.setAttribute("c4.operation", operationName);
-          span.setAttribute("c4.caller", callerName);
-          span.setAttribute("c4.callee", calleeName);
+          // span.setAttribute("c4.operation", operationName);
+          // span.setAttribute("c4.caller", callerName);
+          // span.setAttribute("c4.callee", calleeName);
           return await method.apply(this, args);
         } finally {
           span.end();
