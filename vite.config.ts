@@ -16,16 +16,7 @@ export default defineConfig({
         ({ model }) => ({
           file: "src/examples/workspace/workspace.c4",
           content: toLikeC4(model),
-        }),
-        ({ spans }) => {
-          const spanObjects = spans.map((span) =>
-            JSON.parse(new TextDecoder().decode(span)),
-          );
-          return {
-            file: "src/examples/workspace/spans.json",
-            content: JSON.stringify(spanObjects, null, 2),
-          };
-        },
+        })
       ),
     ],
 
