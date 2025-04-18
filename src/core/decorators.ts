@@ -23,7 +23,7 @@ type Component = Constructor;
 const log = debug("@oselvar/c4");
 
 export function C4SoftwareSystem<T extends SoftwareSystem>(
-  params?: C4SoftwareSystemParams,
+  params?: C4SoftwareSystemParams
 ) {
   return (system: T) => {
     globalC4ModelBuilder.addSoftwareSystem(system.name as C4Name, {
@@ -94,18 +94,18 @@ function c4OperationWrapper(method: Function) {
 
     if (callerClassNameCandidates.length === 0) {
       log(
-        `@oselvar/c4: Could not determine any caller class names from stack: ${JSON.stringify(stack)}`,
+        `@oselvar/c4: Could not determine any caller class names from stack: ${JSON.stringify(stack)}`
       );
     }
 
     const callerName = callerClassNameCandidates.find(
       (callerName) =>
-        callerName !== calleeName && globalC4ModelBuilder.hasObject(callerName),
+        callerName !== calleeName && globalC4ModelBuilder.hasObject(callerName)
     );
 
     if (!callerName) {
       log(
-        `@oselvar/c4:  No caller for ${calleeName}: ${JSON.stringify(stack, null, 2)}`,
+        `@oselvar/c4:  No caller for ${calleeName}: ${JSON.stringify(stack, null, 2)}`
       );
     }
 
@@ -116,8 +116,9 @@ function c4OperationWrapper(method: Function) {
     }
 
     if (callerName) {
-      const tracer = trace.getTracer("@oselvar/c4/call");
-      return tracer.startActiveSpan(operationName, async (span) => {
+      // TODO: Move this to the model builder so all otel logic it in one place
+      const tracer = trace.getTracer("@oselvar/c4");
+      return tracer.startActiveSpan("call", async (span) => {
         try {
           span.setAttribute("c4.operation", operationName);
           span.setAttribute("c4.caller", callerName);
@@ -142,7 +143,7 @@ function toClassNames(frame: ErrorStackParser.StackFrame): readonly C4Name[] {
   }
   if (frame.fileName) {
     classNames.push(
-      basename(frame.fileName, extname(frame.fileName)) as C4Name,
+      basename(frame.fileName, extname(frame.fileName)) as C4Name
     );
   }
   return classNames;
