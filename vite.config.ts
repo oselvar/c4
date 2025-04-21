@@ -16,7 +16,7 @@ export default defineConfig({
         ({ model }) => ({
           file: "src/examples/workspace/workspace.c4",
           content: toLikeC4(model),
-        })
+        }),
       ),
     ],
 

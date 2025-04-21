@@ -31,6 +31,10 @@
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     },
+    "./decorators": {
+      "types": "./dist/decorators/index.d.ts",
+      "import": "./dist/decorators/index.js"
+    },
     "./generators": {
       "types": "./dist/generators/index.d.ts",
       "import": "./dist/generators/index.js"
