@@ -58,7 +58,7 @@ function c4OperationWrapper(method: Function) {
       .flatMap(toClassNames);
 
     const callerName = callerClassNameCandidates.find(
-      (callerName) => callerName !== calleeName,
+      (callerName) => callerName !== calleeName
     );
 
     const operationName = method.name;
@@ -79,7 +79,7 @@ function c4OperationWrapper(method: Function) {
         } finally {
           span.end();
         }
-      },
+      }
     );
   }
   return wrapper;
